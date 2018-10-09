@@ -12,4 +12,13 @@ router.get('/API/mindfulness', function(req, res, next) {
   });
 });
 
+router.post('/API/mindfulness', function(req, res, next) {
+    let tmp = req.body.response + "request received";
+    console.log(tmp);
+    res.json({
+        test: tmp
+    });
+});
+
+
 module.exports = router;
