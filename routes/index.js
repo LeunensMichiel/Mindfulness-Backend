@@ -1,9 +1,11 @@
 var express = require('express');
+var connection = require('../config/database');
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'ExpressTest' });
+router.get('/API/mindfulness', function(req, res, next) {
+  connection.query("SELECT * FROM TextPage", function (error, results, fields){
+    res.json(results);
+  })
 });
 
 module.exports = router;
