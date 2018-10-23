@@ -9,8 +9,8 @@ let UserSchema = new mongoose.Schema({
     current_exercise: mongoose.Types.ObjectId,
     Group: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Groups'
+        ref: 'group'
     }
 });
 
-mongoose.model('Users', UserSchema);
+mongoose.model('user', UserSchema);

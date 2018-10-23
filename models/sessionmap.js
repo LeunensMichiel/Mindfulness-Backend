@@ -2,19 +2,19 @@ let mongoose = require('mongoose');
 
 let SessionmapSchema = new mongoose.Schema({
     titleCourse: String,
-    sessions: [{
-        id: Schema.Types.ObjectId,
+    session: [{
+        id: String,
         title: String,
         // position: Number, //No need for position
         exercises: [{
-            id: Schema.Types.ObjectId,
-            title: String,
+            id: String,
+            title: String/*,
             //position: Number, //No need for position
             hexaflex_badges: [Number],
             Pages: [{
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Pages'
-            }]
+            }]*/
         }]
     }]
 
@@ -22,4 +22,4 @@ let SessionmapSchema = new mongoose.Schema({
 
 
 
-mongoose.model('Sessionmaps', SessionmapSchema);
+mongoose.model('sessionmap', SessionmapSchema);

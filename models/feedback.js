@@ -7,4 +7,4 @@ let FeedbackSchema = new mongoose.Schema({
 
 });
 
-mongoose.model('Feedback', FeedbackSchema);
+mongoose.model('feedback', FeedbackSchema);

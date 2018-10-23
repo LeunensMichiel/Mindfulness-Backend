@@ -1,10 +1,10 @@
 let mongoose = require('mongoose');
 
 let GroupSchema = new mongoose.Schema({
-    name: String,
+    name: String/*,
     sessionmap: {type: mongoose.Schema.Types.ObjectId,
-                ref: 'Sessionmaps'}
+                ref: 'Sessionmaps'}*/
 
 });
 
-mongoose.model('Groups', GroupSchema);
+mongoose.model('group', GroupSchema);
