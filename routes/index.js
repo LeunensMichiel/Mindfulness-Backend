@@ -1,24 +1,26 @@
-var express = require('express');
-var router = express.Router();
+let express = require('express');
+let router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+let mongoose = require("mongoose");
+let Sessionmap = mongoose.model('sessionmap');
+
+router.get('/API/sessionmap/:sessionmap', function (req, res, next) {
+
+    res.json(req.sessionmap);
 });
 
-router.get('/API/mindfulness', function(req, res, next) {
-  res.json({
-      test: "hello android"
-  });
+router.param('sessionmap', function (req, res, next, id) {
+    let query = Sessionmap.findById(id);
+    query.exec(function (err, sessionmap) {
+        if (err) {
+            return next(err);
+        }
+        if (!sessionmap) {
+            return next(new Error('not found ' + id));
+        }
+        req.sessionmap = sessionmap;
+        return next();
+    })
 });
-
-router.post('/API/mindfulness', function(req, res, next) {
-    let tmp = req.body.response + "request received";
-    console.log(tmp);
-    res.json({
-        test: tmp
-    });
-});
-
 
 module.exports = router;
