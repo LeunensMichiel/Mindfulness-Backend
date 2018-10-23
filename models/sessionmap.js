@@ -2,7 +2,7 @@ let mongoose = require('mongoose');
 
 let SessionmapSchema = new mongoose.Schema({
     titleCourse: String,
-    session: [{
+    sessions: [{
         id: String,
         title: String,
         // position: Number, //No need for position
