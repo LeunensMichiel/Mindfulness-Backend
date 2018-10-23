@@ -6,12 +6,14 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+var mongoose = require('mongoose');
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+mongoose.connect('mongodb://localhost/mindfulnessdb', {  useMongoClient: true });
 
 app.use(logger('dev'));
 app.use(express.json());
