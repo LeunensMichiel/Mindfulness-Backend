@@ -5,6 +5,30 @@ let mongoose = require("mongoose");
 let Sessionmap = mongoose.model('sessionmap');
 let Page = mongoose.model('page');
 
+router.get('/API/sessionmaps', function(req, res, next) {
+  let query = Sessionmap.find({}, {sessions:true});
+
+
+  query.exec(function(err, sessionmaps) {
+    if (err) {
+      return next(err);
+    }
+    res.json(sessionmaps);
+  });
+});
+router.post('/API/sessionmaps/', function (req, res, next) {
+  //werkt nog niet, want we werken niet met sessionmaps of ID,s
+    let sessie = new Sessie({
+      title: req.body.title
+    });
+    sessie.save(function (err, post) {
+      if (err) {
+        return next(err);
+      }
+      res.json(post);
+    });
+
+});
 router.get('/API/sessionmap/:sessionmap', function (req, res, next) {
     res.json(req.sessionmap);
 });
