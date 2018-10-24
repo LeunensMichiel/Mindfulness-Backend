@@ -5,13 +5,13 @@ let PageSchema = new mongoose.Schema({
     exercise_id: mongoose.Schema.Types.ObjectId,
     pathAudio: String,
     description: String,
-    Type: String,
-    paragraph: [{
-        id: mongoose.Schema.Types.ObjectId,
-        Type: String,
-        position: Number,
-        content: String
-    }]
+    type: String
+    // paragraph: [{
+    //     id: mongoose.Schema.Types.ObjectId,
+    //     Type: String,
+    //     position: Number,
+    //     content: String
+    // }]
 
 });
 
