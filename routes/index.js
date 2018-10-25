@@ -5,7 +5,7 @@ let mongoose = require("mongoose");
 let Sessionmap = mongoose.model('sessionmap');
 let Page = mongoose.model('page');
 let Session = mongoose.model('session');
-let Exercises = mongoose.model('exercise');
+let Exercise = mongoose.model('exercise');
 
 router.get('/API/sessionmaps', function (req, res, next) {
     let query = Sessionmap.find().populate("sessions");
@@ -24,11 +24,12 @@ router.get('/API/sessionmaps', function (req, res, next) {
 
 });
 
-router.post('/API/sessies', function (req, res, next) {
-    let sessie = new Sessie({
-        title: req.body.title
+//werkt
+router.post('/API/sessionmap', function (req, res, next) {
+    let sessionmap = new Sessionmap({
+        titleCourse: req.body.titleCourse
     });
-    sessie.save(function (err, post) {
+    sessionmap.save(function (err, post) {
         if (err) {
             return next(err);
         }
@@ -36,6 +37,47 @@ router.post('/API/sessies', function (req, res, next) {
     });
 
 });
+
+router.post('/API/session', function(req, res, next) {
+    let session = new Session({
+        title: req.body.title,
+        position: req.body.position,
+        sessionmap_id: req.body.sessionmap_id
+    });
+
+    console.log(req.body.title);
+
+    session.save(function(err, session) {
+        if (err) {
+            return next(err);
+        }
+
+        let sessionQuery = Sessionmap.findById(session.sessionmap_id);
+        sessionQuery.exec(function (err, sessionmap) {
+            if (err) {
+
+                return next(err);
+            }
+            console.log(sessionmap);
+
+            if (sessionmap.sessions) {
+                sessionmap.sessions[sessionmap.sessions.length] = session.sessionmap_id;
+            }else {
+                sessionmap.sessions = [session.sessionmap_id];
+            }
+
+            sessionmap.save(function(err, sessonmap){
+                if (err){
+                    return next(err);
+                }
+
+                res.json(session);
+
+            });
+        });
+    });
+});
+
 router.get('/API/sessionmap/:sessionmap', function (req, res, next) {
     res.json(req.sessionmap);
 });
@@ -55,17 +97,52 @@ router.param('sessionmap', function (req, res, next, id) {
         req.sessionmap = sessionmap;
 
         return next();
-
     })
 });
 
+router.get('/API/sessions/:session', function(req, res, next){
+    res.json(req.sessions);
+});
+
+router.param('sessions', function (req, res, next, id) {
+    let query = Session.find({"sessionmap_id": id});
+    query.exec(function (err, sessions) {
+        if (err) {
+            return next(err);
+        }
+        if (!sessions) {
+            return next(new Error('not found ' + id));
+        }
+        req.sessions = sessions;
+        return next();
+    })
+});
+
+router.get('/API/session/:session', function(req, res,next) {
+    res.json(req.session);
+});
+
+//werkt
+router.param('session', function(req, res, next, id) {
+    let query = Session.findById(id);
+    query.exec(function (err, session) {
+        if (err) {
+            return next(err);
+        }
+        if (!session) {
+            return next(new Error('not found ' + id));
+        }
+        req.session = session;
+        return next();
+    })
+});
 
 router.get('/API/exercises/:exercise', function (req, res, next) {
     res.json(req.exercise);
 });
 
 router.param('exercise', function (req, res, next, id) {
-    let query = Exercises.find({session_id: id});
+    let query = Exercise.find({session_id: id});
     query.exec(function (err, exercise) {
         if (err) {
             return next(err);
@@ -96,6 +173,7 @@ router.param('page', function (req, res, next, id) {
         return next();
     });
 });
+
 
 
 module.exports = router;
