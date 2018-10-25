@@ -50,7 +50,7 @@ router.param('sessionmap', function (req, res, next, id) {
     })
 });
 
-router.get('/API/exercise/:exercise', function (req, res, next) {
+router.get('/API/exercises/:exercise', function (req, res, next) {
     res.json(req.exercise);
 });
 
