@@ -1,7 +1,11 @@
 let mongoose = require('mongoose');
 
 let SessionmapSchema = new mongoose.Schema({
-    titleCourse: String
+    titleCourse: String,
+    // sessions: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'session'
+    // }]
 
 });
 

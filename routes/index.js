@@ -7,6 +7,27 @@ let Page = mongoose.model('page');
 let Session = mongoose.model('session');
 let Exercises = mongoose.model('exercise');
 
+router.get('/API/sessionmaps', function(req, res, next) {
+    let query = Sessionmap.find();
+    query.exec(function(err, sessionmaps) {
+      if (err) {
+        return next(err);
+      }
+      res.json(sessionmaps);
+    });
+  });
+  router.post('/API/sessies', function (req, res, next) {
+      let sessie = new Sessie({
+        title: req.body.title
+      });
+      sessie.save(function (err, post) {
+        if (err) {
+          return next(err);
+        }
+        res.json(post);
+      });
+
+  });
 router.get('/API/sessionmap/:sessionmap', function (req, res, next) {
     res.json(req.sessionmap);
 });
