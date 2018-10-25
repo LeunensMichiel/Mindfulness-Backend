@@ -9,7 +9,6 @@ let Exercises = mongoose.model('exercise');
 
 router.get('/API/sessionmaps', function(req, res, next) {
     let query = Sessionmap.find();
-
     query.exec(function(err, sessionmaps) {
       if (err) {
         return next(err);
