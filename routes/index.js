@@ -11,7 +11,8 @@ router.get('/API/sessionmap/:sessionmap', function (req, res, next) {
 });
 
 router.param('sessionmap', function (req, res, next, id) {
-    let query = Sessionmap.find(id).populate("sessions");
+    let query = Sessionmap.findById(id);
+
     query.exec(function (err, sessionmap) {
         if (err) {
             return next(err);
@@ -21,9 +22,30 @@ router.param('sessionmap', function (req, res, next, id) {
             return next(new Error('not found ' + id));
         }
 
-        req.sessionmap = sessionmap;
+        let sessionQuery = Session.find({sessionmap_id: id});
 
-        return next();
+        sessionQuery.exec(function(err, sessions) {
+            if (err) {
+                return next(err);
+            }
+
+            if (!sessions) {
+                return next(new Error('not found ' + id));
+            }
+
+            let result = {
+                _id: sessionmap._id,
+                titleCourse: sessionmap.titleCourse,
+                sessions: sessions
+            };
+
+
+            req.sessionmap = result;
+
+            return next();
+
+        });
+
     })
 });
 
