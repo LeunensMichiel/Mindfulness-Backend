@@ -7,15 +7,14 @@ var bodyParser = require('body-parser');
 
 var mongoose = require('mongoose');
 
-
-
-
 mongoose.connect('mongodb://projecten3studserver03.westeurope.cloudapp.azure.com/mindfulnessdb', { useNewUrlParser: true });
 require('./models/user');
 require('./models/page');
 require('./models/feedback');
 require('./models/sessionmap');
 require('./models/group');
+require('./models/exercise');
+require('./models/session');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');

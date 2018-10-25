@@ -4,26 +4,30 @@ let router = express.Router();
 let mongoose = require("mongoose");
 let Sessionmap = mongoose.model('sessionmap');
 let Page = mongoose.model('page');
+let Session = mongoose.model('session');
 
 router.get('/API/sessionmap/:sessionmap', function (req, res, next) {
     res.json(req.sessionmap);
 });
 
 router.param('sessionmap', function (req, res, next, id) {
-    let query = Sessionmap.findById(id);
+    let query = Sessionmap.find(id).populate("sessions");
     query.exec(function (err, sessionmap) {
         if (err) {
             return next(err);
         }
+
         if (!sessionmap) {
             return next(new Error('not found ' + id));
         }
+
         req.sessionmap = sessionmap;
+
         return next();
     })
 });
 
-router.get('/API/exercise/:exercise', function(req, res, next){
+router.get('/API/exercise/:exercise', function (req, res, next) {
     res.json(req.exercise);
 });
 
@@ -40,7 +44,6 @@ router.param('exercise', function (req, res, next, id) {
         return next();
     })
 });
-
 
 
 module.exports = router;
