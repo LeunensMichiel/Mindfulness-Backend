@@ -7,33 +7,41 @@ let Page = mongoose.model('page');
 let Session = mongoose.model('session');
 let Exercises = mongoose.model('exercise');
 
-router.get('/API/sessionmaps', function(req, res, next) {
-    let query = Sessionmap.find();
-    query.exec(function(err, sessionmaps) {
-      if (err) {
-        return next(err);
-      }
-      res.json(sessionmaps);
-    });
-  });
-  router.post('/API/sessies', function (req, res, next) {
-      let sessie = new Sessie({
-        title: req.body.title
-      });
-      sessie.save(function (err, post) {
+router.get('/API/sessionmaps', function (req, res, next) {
+    let query = Sessionmap.find().populate("sessions");
+    query.exec(function (err, sessionmaps) {
         if (err) {
-          return next(err);
+            return next(err);
+        }
+
+        sessionmaps.forEach(function (element) {
+            console.log(element);
+        });
+
+        res.json(sessionmaps);
+    });
+
+
+});
+
+router.post('/API/sessies', function (req, res, next) {
+    let sessie = new Sessie({
+        title: req.body.title
+    });
+    sessie.save(function (err, post) {
+        if (err) {
+            return next(err);
         }
         res.json(post);
-      });
+    });
 
-  });
+});
 router.get('/API/sessionmap/:sessionmap', function (req, res, next) {
     res.json(req.sessionmap);
 });
 
 router.param('sessionmap', function (req, res, next, id) {
-    let query = Sessionmap.findById(id);
+    let query = Sessionmap.findById(id).populate("sessions");
 
     query.exec(function (err, sessionmap) {
         if (err) {
@@ -44,32 +52,13 @@ router.param('sessionmap', function (req, res, next, id) {
             return next(new Error('not found ' + id));
         }
 
-        let sessionQuery = Session.find({sessionmap_id: id}).sort({position: 1});
+        req.sessionmap = sessionmap;
 
-        sessionQuery.exec(function(err, sessions) {
-            if (err) {
-                return next(err);
-            }
-
-            if (!sessions) {
-                return next(new Error('not found ' + id));
-            }
-
-            let result = {
-                _id: sessionmap._id,
-                titleCourse: sessionmap.titleCourse,
-                sessions: sessions
-            };
-
-
-            req.sessionmap = result;
-
-            return next();
-
-        });
+        return next();
 
     })
 });
+
 
 router.get('/API/exercises/:exercise', function (req, res, next) {
     res.json(req.exercise);
@@ -89,23 +78,23 @@ router.param('exercise', function (req, res, next, id) {
     })
 });
 
-router.get('/API/pages/:page', function(req, res, next){
+router.get('/API/pages/:page', function (req, res, next) {
     res.json(req.pagess);
 });
 
-router.param('page', function(req, res, next, id){
-   let query = Page.find({exercise_id: id});
+router.param('page', function (req, res, next, id) {
+    let query = Page.find({exercise_id: id});
 
-   query.exec(function(err, pages){
-       if (err) {
-           return next(err);
-       }
-       if (!pages) {
-           return next(new Error('not found ' + id));
-       }
-       req.pagess = pages;
-       return next();
-   });
+    query.exec(function (err, pages) {
+        if (err) {
+            return next(err);
+        }
+        if (!pages) {
+            return next(new Error('not found ' + id));
+        }
+        req.pagess = pages;
+        return next();
+    });
 });
 
 
