@@ -68,5 +68,24 @@ router.param('exercise', function (req, res, next, id) {
     })
 });
 
+router.get('/API/pages/:page', function(req, res, next){
+    res.json(req.pagess);
+});
+
+router.param('page', function(req, res, next, id){
+   let query = Page.find({exercise_id: id});
+
+   query.exec(function(err, pages){
+       if (err) {
+           return next(err);
+       }
+       if (!pages) {
+           return next(new Error('not found ' + id));
+       }
+       req.pagess = pages;
+       return next();
+   });
+});
+
 
 module.exports = router;
