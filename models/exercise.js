@@ -5,16 +5,7 @@ let ExerciseSchema = new mongoose.Schema({
     position: Number,
     session_id: mongoose.Schema.Types.ObjectId,
     // position: Number, //No need for position
-    pages: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'page'/*,
-            //position: Number, //No need for position
-            hexaflex_badges: [Number],
-            Pages: [{
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Pages'
-            }]*/
-    }]
+
 
 });
 
