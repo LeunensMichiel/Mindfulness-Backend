@@ -6,6 +6,7 @@ let ParagraphSchema = new mongoose.Schema({
     type:String,
     filename:String,
     pathname:String,
+    description:String,
     page_id: mongoose.Schema.Types.ObjectId
 });
 
