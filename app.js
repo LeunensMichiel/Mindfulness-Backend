@@ -15,6 +15,7 @@ require('./models/sessionmap');
 require('./models/group');
 require('./models/exercise');
 require('./models/session');
+require('./models/paragraph');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');

@@ -169,5 +169,24 @@ router.param('page', function (req, res, next, id) {
     });
 });
 
+// paragraph
+router.get('/API/paragraphs/:paragraph', function (req, res, next) {
+    res.json(req.paragraphs);
+});
+
+router.param('paragraphs', function (req, res, next, id) {
+    let query = Paragraph.find({page_id: id});
+
+    query.exec(function (err, paragraphs) {
+        if (err) {
+            return next(err);
+        }
+        if (!paragraphs) {
+            return next(new Error('not found ' + id));
+        }
+        req.paragraphs = paragraphs;
+        return next();
+    });
+});
 
 module.exports = router;

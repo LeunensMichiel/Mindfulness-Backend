@@ -6,14 +6,11 @@ let PageSchema = new mongoose.Schema({
     description: String,
     position: Number,
     exercise_id: mongoose.Schema.Types.ObjectId,
-    type: String
-    // paragraph: [{
-    //     id: mongoose.Schema.Types.ObjectId,
-    //     Type: String,
-    //     position: Number,
-    //     content: String
-    // }]
-
+    type: String,
+    paragraphs:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'paragraphs'
+    }]
 });
 
 mongoose.model('page', PageSchema);
