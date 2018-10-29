@@ -9,6 +9,4 @@ let SessionmapSchema = new mongoose.Schema({
 
 });
 
-
-
 mongoose.model('sessionmap', SessionmapSchema);
