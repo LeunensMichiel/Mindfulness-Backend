@@ -155,7 +155,7 @@ router.get('/API/pages/:page', function (req, res, next) {
 });
 
 router.param('page', function (req, res, next, id) {
-    let query = Page.find({exercise_id: id});
+    let query = Page.find({exercise_id: id}).populate('paragraphs');
 
     query.exec(function (err, pages) {
         if (err) {

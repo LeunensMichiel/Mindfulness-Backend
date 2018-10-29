@@ -9,7 +9,7 @@ let PageSchema = new mongoose.Schema({
     type: String,
     paragraphs:[{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'paragraphs'
+        ref: 'paragraph'
     }]
 });
 
