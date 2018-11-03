@@ -6,6 +6,8 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 
 var mongoose = require('mongoose');
+let passport = require('passport');
+
 
 mongoose.connect('mongodb://projecten3studserver03.westeurope.cloudapp.azure.com/mindfulnessdb', { useNewUrlParser: true });
 require('./models/user');
@@ -17,6 +19,8 @@ require('./models/exercise');
 require('./models/session');
 require('./models/paragraph');
 
+require('./config/passport');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var app = express();
@@ -26,6 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -36,6 +41,10 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
+
+/*
+ * For production we should use https instead of http
+ */
 
 // error handler
 app.use(function(err, req, res, next) {
