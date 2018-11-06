@@ -10,6 +10,8 @@ let passport = require('passport');
 
 
 mongoose.connect('mongodb://projecten3studserver03.westeurope.cloudapp.azure.com/mindfulnessdb', { useNewUrlParser: true });
+require('./config/fileDB');
+require('./models/image');
 require('./models/user');
 require('./models/page');
 require('./models/feedback');
@@ -23,6 +25,7 @@ require('./config/passport');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var fileRouter = require('./routes/files');
 var app = express();
 
 app.use(logger('dev'));
@@ -34,6 +37,7 @@ app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/file', fileRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
