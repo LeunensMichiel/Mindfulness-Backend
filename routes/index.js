@@ -7,6 +7,7 @@ let Sessionmap = mongoose.model('sessionmap');
 let Page = mongoose.model('page');
 let Session = mongoose.model('session');
 let Exercise = mongoose.model('exercise');
+let Image = mongoose.model('image');
 
 let jwt = require('express-jwt');
 
@@ -216,6 +217,14 @@ router.param('paragraphs', function (req, res, next, id) {
         }
         req.paragraphs = paragraphs;
         return next();
+    });
+});
+
+router.post('/API/image', function(req,res, next){
+    let img = new Image()
+    img.save(function(err, post ){
+        if (err) return next(err);
+        res.json({message: "nice"})
     });
 });
 

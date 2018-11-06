@@ -8,21 +8,38 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 let passport = require('passport');
 
+var mongooseMulti = require('mongoose-multi');
+// get all infos from external schema and config file
+var config = require('./config/config.js');
+var schemaFile = require('./models/schemas.js');
 
-mongoose.connect('mongodb://projecten3studserver03.westeurope.cloudapp.azure.com/mindfulnessdb', { useNewUrlParser: true });
-require('./models/user');
-require('./models/page');
+var connections = {};
+for (var databaseName in config.db) {
+   connections[databaseName] = {
+      name: databaseName,
+      url: config.db[databaseName],
+      schemas: schemaFile[databaseName]
+      // options : null - not implemented yet
+   };
+}
+
+// start the connections
+var db = mongooseMulti.start(connections);
+//require('./config/multi-con');
+//require('./models/user');
+/* require('./models/page');
 require('./models/feedback');
 require('./models/sessionmap');
 require('./models/group');
 require('./models/exercise');
 require('./models/session');
-require('./models/paragraph');
+require('./models/paragraph'); */
+//require('./models/image');
 
-require('./config/passport');
+//require('./config/passport');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+//var indexRouter = require('./routes/index');
+//var usersRouter = require('./routes/users');
 var app = express();
 
 app.use(logger('dev'));
@@ -32,8 +49,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+//app.use('/', indexRouter);
+//app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
