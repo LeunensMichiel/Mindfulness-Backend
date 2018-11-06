@@ -7,6 +7,9 @@ let Sessionmap = mongoose.model('sessionmap');
 let Page = mongoose.model('page');
 let Session = mongoose.model('session');
 let Exercise = mongoose.model('exercise');
+let Post = mongoose.model('post');
+let Paragraph = mongoose.model('paragraph');
+let User = mongoose.model('user');
 
 let jwt = require('express-jwt');
 
@@ -192,18 +195,111 @@ router.get('/API/paragraphs/:paragraph', function (req, res, next) {
     res.json(req.paragraphs);
 });
 
-router.param('paragraphs', function (req, res, next, id) {
+router.param('paragraph', function (req, res, next, id) {
     let query = Paragraph.find({page_id: id});
 
-    query.exec(function (err, paragraphs) {
+    query.exec(function (err, paragraph) {
         if (err) {
             return next(err);
         }
-        if (!paragraphs) {
+        if (!paragraph) {
             return next(new Error('not found ' + id));
         }
-        req.paragraphs = paragraphs;
+        req.paragraph = paragraph;
         return next();
+    });
+});
+
+//post
+    // werkt
+router.get('/API/posts', function (req, res, next) {
+    let query = Post.find();
+    query.exec(function (err, posts) {
+        if (err) {
+            return next(err);
+        }
+
+        posts.forEach(function (element) {
+            console.log(element);
+        });
+
+        res.json(posts);
+    });
+});
+
+// werkt nog niet?!
+router.get('/API/posts/:userid', function (req, res, next) {
+    res.json(req.posts);
+});
+
+router.param('userid', function (req, res, next, id) {
+    console.log("test");
+    let query = Post.find({"user_id": id});
+
+    query.exec(function (err, posts) {
+        if (err) {
+            return next(err);
+        }
+        if (!posts) {
+            return next(new Error('not found ' + id));
+        }
+        req.posts = posts;
+        return next();
+    });
+});
+/*
+router.post('/API/post', function (req, res, next) {
+    let post = new Post({
+        sessionmap_id: req.body.sessionmap_id,
+        session_id: req.body.session_id,
+        exercise_id: req.body.exercise_id,
+        page_id: req.body.exercise_id,
+        inhoud: req.body.inhoud,
+        afbeelding: req.body.afbeelding,
+        user_id: req.body.user_id
+    });
+    post.save(function (err, pst) {
+        if (err) {
+            return next(err);
+        }
+        res.json(pst);
+    });
+}); */
+
+    // werkt
+router.post('/API/post', function (req, res, next) {
+    let post = new Post({
+        sessionmap_id: req.body.sessionmap_id,
+        session_id: req.body.session_id,
+        exercise_id: req.body.exercise_id,
+        page_id: req.body.exercise_id,
+        inhoud: req.body.inhoud,
+        afbeelding: req.body.afbeelding,
+        user_id: req.body.user_id
+    });
+
+    post.save(function (err, post) {
+        if (err) {
+            return next(err);
+        }
+
+        let postQuery = User.findById(post.user_id);
+        postQuery.exec(function (err, user) {
+            if (err) {
+
+                return next(err);
+            }
+            console.log(user);
+
+            user.posts.push(post);
+
+            user.save(function (err, user) {
+                if (err) {
+                    return next(err);
+                }
+                res.json(post);
+            });
+        });
     });
 });
 
