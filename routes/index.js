@@ -20,10 +20,6 @@ router.get('/API/sessionmaps', function (req, res, next) {
             return next(err);
         }
 
-        sessionmaps.forEach(function (element) {
-            console.log(element);
-        });
-
         res.json(sessionmaps);
     });
 
@@ -140,6 +136,23 @@ router.param('sessionmapid', function (req, res, next, id) {
         req.sessions = sessions;
         return next();
     })
+});
+
+router.get('/API/sessions', function (req, res, next) {
+    let query = Session.find();
+    query.exec(function (err, sessies) {
+        if (err) {
+            return next(err);
+        }
+
+        sessies.forEach(function (element) {
+            console.log(element);
+        });
+
+        res.json(sessies);
+    });
+
+
 });
 
 router.get('/API/session/:session', function (req, res, next) {
