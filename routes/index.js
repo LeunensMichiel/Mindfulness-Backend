@@ -43,6 +43,30 @@ router.post('/API/sessionmap', function (req, res, next) {
 
 });
 
+router.delete('/API/sessionmap/:sessionmap', function(req, res) {
+    Sessionmap.remove({ _id: { $in: req.sessionmap.sessions } }, function(err) {
+        if (err) return next(err);
+        req.sessionmap.remove(function(err) {
+            if (err) {
+                return next(err);
+            }
+            res.json(req.sessionmap);
+        });
+    });
+});
+
+//NAKIJKEN
+router.put('/API/sessionmap/:sessionmap/update', function (req, res) {
+    let sessionmap = req.sessionmap;
+    sessionmap.titleCourse = req.body.titleCourse;
+    sessionmap.save(function (err) {
+        if (err) {
+            return res.send(err);
+        }
+        res.json(req.body);
+    })
+});
+
 router.post('/API/session', function (req, res, next) {
     let session = new Session({
         title: req.body.title,
