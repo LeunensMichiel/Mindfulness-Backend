@@ -1,14 +1,14 @@
 let express = require('express');
 let router = express.Router();
 
-let mongoose = require("mongoose");
-
+let con1 = require("../config/fileDB");
+/* 
 let Sessionmap = mongoose.model('sessionmap');
 let Page = mongoose.model('page');
 let Session = mongoose.model('session');
-let Exercise = mongoose.model('exercise');
-let Image = mongoose.model('image');
-
+let Exercise = mongoose.model('exercise'); */
+let Image = con1.model('image');
+/* 
 let jwt = require('express-jwt');
 
 let auth = jwt({secret: process.env.MINDFULNESS_BACKEND_SECRET,
@@ -219,7 +219,7 @@ router.param('paragraphs', function (req, res, next, id) {
         return next();
     });
 });
-
+ */
 router.post('/API/image', function(req,res, next){
     let img = new Image()
     img.save(function(err, post ){

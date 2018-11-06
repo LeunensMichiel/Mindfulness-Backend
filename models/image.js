@@ -1,7 +1,6 @@
-let filedb = require('../config/multi-con')
-let mongoose = require('mongoose')
-
-let imageSchema = new mongoose.Schema({
+let con1 = require('../config/fileDB')
+let Schema = require('mongoose').Schema
+let imageSchema = new Schema({
     createdAt:{
         type: Date,
         required: true,
@@ -9,4 +8,4 @@ let imageSchema = new mongoose.Schema({
     }
 })
 
-filedb.fileCon.model('image', imageSchema);
+con1.model('image', imageSchema);

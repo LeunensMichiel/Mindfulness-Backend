@@ -8,6 +8,12 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 let passport = require('passport');
 
+mongoose.connect('mongodb://localhost/mindfullnessDB');
+var con2 = require("./config/fileDB");
+require('./models/user');
+require('./models/image');
+
+/* 
 var mongooseMulti = require('mongoose-multi');
 // get all infos from external schema and config file
 var config = require('./config/config.js');
@@ -23,23 +29,14 @@ for (var databaseName in config.db) {
    };
 }
 
-// start the connections
-var db = mongooseMulti.start(connections);
-//require('./config/multi-con');
-//require('./models/user');
-/* require('./models/page');
-require('./models/feedback');
-require('./models/sessionmap');
-require('./models/group');
-require('./models/exercise');
-require('./models/session');
-require('./models/paragraph'); */
-//require('./models/image');
+var db = mongooseMulti.start(connections); */
 
-//require('./config/passport');
 
-//var indexRouter = require('./routes/index');
-//var usersRouter = require('./routes/users');
+
+require('./config/passport');
+
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
 var app = express();
 
 app.use(logger('dev'));
@@ -49,8 +46,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
-//app.use('/', indexRouter);
-//app.use('/users', usersRouter);
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

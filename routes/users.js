@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var mongoose = require('mongoose');
+var mongoose = require('../config/mindfullnessDB');
 var User = mongoose.model('user');
 let passport = require("passport");
 let jwt = require('express-jwt');
