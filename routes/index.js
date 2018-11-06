@@ -55,7 +55,6 @@ router.delete('/API/sessionmap/:sessionmap', function(req, res) {
     });
 });
 
-//NAKIJKEN
 router.put('/API/sessionmap/:sessionmap/update', function (req, res) {
     let sessionmap = req.sessionmap;
     sessionmap.titleCourse = req.body.titleCourse;
