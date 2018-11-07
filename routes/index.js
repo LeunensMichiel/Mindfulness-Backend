@@ -10,8 +10,10 @@ let Exercise = mongoose.model('exercise');
 
 let jwt = require('express-jwt');
 
-let auth = jwt({secret: process.env.MINDFULNESS_BACKEND_SECRET,
-    _userProperty: 'payload'});
+let auth = jwt({
+    secret: process.env.MINDFULNESS_BACKEND_SECRET,
+    _userProperty: 'payload'
+});
 
 router.get('/API/sessionmaps', function (req, res, next) {
     let query = Sessionmap.find().populate("sessions");
@@ -19,11 +21,8 @@ router.get('/API/sessionmaps', function (req, res, next) {
         if (err) {
             return next(err);
         }
-
         res.json(sessionmaps);
     });
-
-
 });
 
 router.post('/API/sessionmap', function (req, res, next) {
@@ -39,10 +38,10 @@ router.post('/API/sessionmap', function (req, res, next) {
 
 });
 
-router.delete('/API/sessionmap/:sessionmap', function(req, res) {
-    Sessionmap.remove({ _id: { $in: req.sessionmap.sessions } }, function(err) {
+router.delete('/API/sessionmap/:sessionmap', function (req, res) {
+    Sessionmap.remove({ _id: { $in: req.sessionmap.sessions } }, function (err) {
         if (err) return next(err);
-        req.sessionmap.remove(function(err) {
+        req.sessionmap.remove(function (err) {
             if (err) {
                 return next(err);
             }
@@ -125,7 +124,7 @@ router.get('/API/sessions/:sessionmapid', function (req, res, next) {
 
 router.param('sessionmapid', function (req, res, next, id) {
     console.log("test");
-    let query = Session.find({"sessionmap_id": id});
+    let query = Session.find({ "sessionmap_id": id });
     query.exec(function (err, sessions) {
         if (err) {
             return next(err);
@@ -174,12 +173,13 @@ router.param('session', function (req, res, next, id) {
     })
 });
 
+//Exercise
 router.get('/API/exercises/:exercise', function (req, res, next) {
     res.json(req.exercise);
 });
 
 router.param('exercise', function (req, res, next, id) {
-    let query = Exercise.find({session_id: id});
+    let query = Exercise.find({ session_id: id });
     query.exec(function (err, exercise) {
         if (err) {
             return next(err);
@@ -197,7 +197,7 @@ router.get('/API/pages/:page', function (req, res, next) {
 });
 
 router.param('page', function (req, res, next, id) {
-    let query = Page.find({exercise_id: id}).populate('paragraphs');
+    let query = Page.find({ exercise_id: id }).populate('paragraphs');
 
     query.exec(function (err, pages) {
         if (err) {
@@ -217,7 +217,7 @@ router.get('/API/paragraphs/:paragraph', function (req, res, next) {
 });
 
 router.param('paragraphs', function (req, res, next, id) {
-    let query = Paragraph.find({page_id: id});
+    let query = Paragraph.find({ page_id: id });
 
     query.exec(function (err, paragraphs) {
         if (err) {
