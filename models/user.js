@@ -14,7 +14,11 @@ let UserSchema = new mongoose.Schema({
     group: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'group'
-    }
+    },
+    posts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'post'
+    }]
 });
 
 UserSchema.methods.setPassword = function (password) {
