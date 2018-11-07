@@ -10,8 +10,10 @@ let Exercise = mongoose.model('exercise');
 
 let jwt = require('express-jwt');
 
-let auth = jwt({secret: process.env.MINDFULNESS_BACKEND_SECRET,
-    _userProperty: 'payload'});
+let auth = jwt({
+    secret: process.env.MINDFULNESS_BACKEND_SECRET,
+    _userProperty: 'payload'
+});
 
 router.get('/API/sessionmaps', function (req, res, next) {
     let query = Sessionmap.find().populate("sessions");
@@ -39,10 +41,10 @@ router.post('/API/sessionmap', function (req, res, next) {
 
 });
 
-router.delete('/API/sessionmap/:sessionmap', function(req, res) {
-    Sessionmap.remove({ _id: { $in: req.sessionmap.sessions } }, function(err) {
+router.delete('/API/sessionmap/:sessionmap', function (req, res) {
+    Sessionmap.remove({_id: {$in: req.sessionmap.sessions}}, function (err) {
         if (err) return next(err);
-        req.sessionmap.remove(function(err) {
+        req.sessionmap.remove(function (err) {
             if (err) {
                 return next(err);
             }
@@ -124,7 +126,6 @@ router.get('/API/sessions/:sessionmapid', function (req, res, next) {
 });
 
 router.param('sessionmapid', function (req, res, next, id) {
-    console.log("test");
     let query = Session.find({"sessionmap_id": id});
     query.exec(function (err, sessions) {
         if (err) {
@@ -157,6 +158,24 @@ router.get('/API/sessions', function (req, res, next) {
 
 router.get('/API/session/:session', function (req, res, next) {
     res.json(req.session);
+});
+
+router.delete('/API/session/:session', function (req, res) {
+    Session.remove(_id, function (err) {
+        if (err) {
+            return next(err)
+        }
+        //SessiemapID verwijderen
+        let query = Sessionmap.find(req.body.sessionmap_id);
+        query.exec(function (err, sessiemap) {
+            if (err) {
+                return next(err);
+            }
+            sessiemap.sessions.remove(req.body.id);
+            return next();
+        });
+        res.json(req.session);
+    });
 });
 
 //werkt
