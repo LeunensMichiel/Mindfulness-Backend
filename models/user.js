@@ -9,8 +9,8 @@ let UserSchema = new mongoose.Schema({
     hash: String,
     salt: String,
     rights: Number,
-    current_session_id: mongoose.Types.ObjectId,
-    current_exercise_id: mongoose.Types.ObjectId,
+    current_session_id: mongoose.Schema.Types.ObjectId,
+    current_exercise_id: mongoose.Schema.Types.ObjectId,
     group: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'group'
