@@ -82,7 +82,6 @@ router.post('/API/session', function (req, res, next) {
 
                 return next(err);
             }
-            console.log(sessionmap);
 
             sessionmap.sessions.push(session);
 
@@ -118,6 +117,19 @@ router.param('sessionmap', function (req, res, next, id) {
         req.sessionmap = sessionmap;
 
         return next();
+    })
+});
+
+router.put('/API/session/:session', function(req, res, next){
+    let session = req.session;
+    session.title = req.body.title;
+    session.position = req.body.position;
+    session.sessionmap_id = req.body.sessionmap_id;
+    session.save(function (err) {
+        if (err) {
+            return res.send(err);
+        }
+        res.json(req.body);
     })
 });
 
