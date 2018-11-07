@@ -25,8 +25,8 @@ router.post('/register', function (req, res, next) {
     let query = Group.findById(req.body.groups_code);
     query.exec(function(err, group){
         let user = new User();
-        user.firstname = req.body.firstname;
-        user.lastname = req.body.lastname;
+        //user.firstname = req.body.firstname;
+        //user.lastname = req.body.lastname;
         user.email = req.body.email;
         user.rights = 2; // 2 = client, 1 = beheerder
         user.groups = group;
