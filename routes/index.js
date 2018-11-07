@@ -161,20 +161,13 @@ router.get('/API/session/:session', function (req, res, next) {
 });
 
 router.delete('/API/session/:session', function (req, res) {
-    Session.remove(_id, function (err) {
+    req.session.remove(function (err) {
         if (err) {
             return next(err)
         }
-        //SessiemapID verwijderen
-        let query = Sessionmap.find(req.body.sessionmap_id);
-        query.exec(function (err, sessiemap) {
-            if (err) {
-                return next(err);
-            }
-            sessiemap.sessions.remove(req.body.id);
-            return next();
-        });
+
         res.json(req.session);
+
     });
 });
 
