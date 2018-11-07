@@ -11,8 +11,6 @@ let passport = require('passport');
 var fs = require('fs')
 
 mongoose.connect('mongodb://projecten3studserver03.westeurope.cloudapp.azure.com/mindfulnessdb', { useNewUrlParser: true });
-require('./config/fileDB');
-require('./models/image');
 require('./models/user');
 require('./models/page');
 require('./models/feedback');
@@ -31,8 +29,8 @@ var fileRouter = require('./routes/files');
 var app = express();
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
@@ -42,10 +40,19 @@ app.use('/users', usersRouter);
 app.use('/file', fileRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+app.use((req, res, next) => {
+    const error = new Error("Not found");
+    error.status = 404;
+    next(error);
+});
+
+app.use((error, req, res, next) => {
+    res.status(error.status || 500);
+    res.json({
+        error: {
+            message: error.message
+        }
+    });
 });
 
 /*
@@ -53,33 +60,33 @@ app.use(function(req, res, next) {
  */
 
 // error handler
-app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
+// app.use(function(err, req, res, next) {
+//     // set locals, only providing error in development
+//     res.locals.message = err.message;
+//     res.locals.error = req.app.get('env') === 'development' ? err : {};
+//
+//     // render the error page
+//     res.status(err.status || 500);
+//     res.json(err.message);
+// });
 
-    // render the error page
-    res.status(err.status || 500);
-    res.json(err.message);
-});
-
-app.post('/upload',function(req,res){
-    console.log(req.files.image.__dirname);
-    console.log(req.files.image.dirname);
-    console.log(req.files.image.path);
-    fs.readFile(req.files.image.path, function(err,data){
-        var dirname = "../../file-upload";
-        var newPath = dirname + "/uploads/" + req.files.image.dirname;
-        fs.writeFile(newPath,data,function(err){
-            if(err){
-                res.json({'response':"Error"});
-            }
-            else{
-                res.json({'response':"Saved"});
-            }
-        });
-    });
-});
+// app.post('/upload',function(req,res){
+//     console.log(req.files.image.__dirname);
+//     console.log(req.files.image.dirname);
+//     console.log(req.files.image.path);
+//     fs.readFile(req.files.image.path, function(err,data){
+//         var dirname = "../../file-upload";
+//         var newPath = dirname + "/uploads/" + req.files.image.dirname;
+//         fs.writeFile(newPath,data,function(err){
+//             if(err){
+//                 res.json({'response':"Error"});
+//             }
+//             else{
+//                 res.json({'response':"Saved"});
+//             }
+//         });
+//     });
+// });
 
 app.get('/uploads/:file',function(req,res){
     file = req.params.file;
