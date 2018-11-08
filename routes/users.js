@@ -29,7 +29,7 @@ router.post('/register', function (req, res, next) {
         //user.lastname = req.body.lastname;
         user.email = req.body.email;
         user.rights = 2; // 2 = client, 1 = beheerder
-        user.groups = group;
+        user.group = group;
         user.setPassword(req.body.password);
         user.save(function (err) {
             if (err) {
@@ -66,7 +66,7 @@ router.get('/API/user/:user', function(req, res, next){
 })
 
 router.param('user', function(req, res, next, id){
-    let query = User.findById(id).populate("user")
+    let query = User.findById(id).populate("group");
 
     query.exec(function(err, user){
         if(err){
