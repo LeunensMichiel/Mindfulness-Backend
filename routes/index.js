@@ -42,7 +42,7 @@ router.post('/API/sessionmap', function (req, res, next) {
 });
 
 router.delete('/API/sessionmap/:sessionmap', function (req, res) {
-    Sessionmap.remove({_id: {$in: req.sessionmap.sessions}}, function (err) {
+    Sessionmap.remove({ _id: { $in: req.sessionmap.sessions } }, function (err) {
         if (err) return next(err);
         req.sessionmap.remove(function (err) {
             if (err) {
@@ -120,25 +120,12 @@ router.param('sessionmap', function (req, res, next, id) {
     })
 });
 
-router.put('/API/session/:session', function(req, res, next){
-    let session = req.session;
-    session.title = req.body.title;
-    session.position = req.body.position;
-    session.sessionmap_id = req.body.sessionmap_id;
-    session.save(function (err) {
-        if (err) {
-            return res.send(err);
-        }
-        res.json(req.body);
-    })
-});
-
 router.get('/API/sessions/:sessionmapid', function (req, res, next) {
     res.json(req.sessions);
 });
 
 router.param('sessionmapid', function (req, res, next, id) {
-    let query = Session.find({"sessionmap_id": id});
+    let query = Session.find({ "sessionmap_id": id });
     query.exec(function (err, sessions) {
         if (err) {
             return next(err);
@@ -198,6 +185,28 @@ router.param('session', function (req, res, next, id) {
     })
 });
 
+router.delete('/API/session/:session', function (req, res) {
+    req.session.remove(function (err) {
+        if (err) {
+            return next(err)
+        }
+        res.json(req.session);
+    });
+});
+
+router.put('/API/session/:session', function (req, res, next) {
+    let session = req.session;
+    session.title = req.body.title;
+    session.position = req.body.position;
+    session.sessionmap_id = req.body.sessionmap_id;
+    session.save(function (err) {
+        if (err) {
+            return res.send(err);
+        }
+        res.json(req.body);
+    })
+});
+
 //Exercise
 router.get('/API/exercises/:exercise', function (req, res, next) {
     res.json(req.exercise);
@@ -215,8 +224,18 @@ router.param('exercise', function (req, res, next, id) {
         req.exercise = exercise;
         return next();
     })
+}); 
+
+router.delete('/API/exercises/:exercise', function (req, res) {
+    req.exercise.remove(function (err) {
+        if (err) { 
+            return next(err)
+        }
+        res.json(req.exercise);
+    });
 });
 
+//Pages
 router.get('/API/pages/:page', function (req, res, next) {
     res.json(req.pagess);
 });
@@ -242,7 +261,7 @@ router.get('/API/paragraphs/:paragraph', function (req, res, next) {
 });
 
 router.param('paragraph', function (req, res, next, id) {
-    let query = Paragraph.find({page_id: id});
+    let query = Paragraph.find({ page_id: id });
 
     query.exec(function (err, paragraph) {
         if (err) {
@@ -257,7 +276,7 @@ router.param('paragraph', function (req, res, next, id) {
 });
 
 //post
-    // werkt
+// werkt
 router.get('/API/posts', function (req, res, next) {
     let query = Post.find();
     query.exec(function (err, posts) {
@@ -280,7 +299,7 @@ router.get('/API/posts/:userid', function (req, res, next) {
 
 router.param('userid', function (req, res, next, id) {
     console.log("test");
-    let query = Post.find({"user_id": id});
+    let query = Post.find({ "user_id": id });
 
     query.exec(function (err, posts) {
         if (err) {
@@ -312,7 +331,7 @@ router.post('/API/post', function (req, res, next) {
     });
 }); */
 
-    // werkt
+// werkt
 router.post('/API/post', function (req, res, next) {
     let post = new Post({
         sessionmap_id: req.body.sessionmap_id,
