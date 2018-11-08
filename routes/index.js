@@ -28,6 +28,8 @@ router.get('/API/sessionmaps', function (req, res, next) {
     });
 });
 
+
+
 router.post('/API/sessionmap', function (req, res, next) {
     let sessionmap = new Sessionmap({
         titleCourse: req.body.titleCourse
@@ -123,6 +125,8 @@ router.param('sessionmap', function (req, res, next, id) {
 router.get('/API/sessions/:sessionmapid', function (req, res, next) {
     res.json(req.sessions);
 });
+
+
 
 router.param('sessionmapid', function (req, res, next, id) {
     let query = Session.find({ "sessionmap_id": id });
@@ -292,7 +296,7 @@ router.get('/API/posts', function (req, res, next) {
     });
 });
 
-// werkt nog niet?!
+/*
 router.get('/API/posts/:userid', function (req, res, next) {
     res.json(req.posts);
 });
@@ -311,25 +315,24 @@ router.param('userid', function (req, res, next, id) {
         req.posts = posts;
         return next();
     });
-});
-/*
-router.post('/API/post', function (req, res, next) {
-    let post = new Post({
-        sessionmap_id: req.body.sessionmap_id,
-        session_id: req.body.session_id,
-        exercise_id: req.body.exercise_id,
-        page_id: req.body.exercise_id,
-        inhoud: req.body.inhoud,
-        afbeelding: req.body.afbeelding,
-        user_id: req.body.user_id
-    });
-    post.save(function (err, pst) {
+}); */
+
+// get post met al die id's
+router.post('/API/getpost', function (req, res, next) {
+    let query = Post.findOne({"sessionmap_id":req.body.sessionmap_id,"session_id":req.body.session_id,
+                          "exercise_id":req.body.exercise_id,"page_id":req.body.page_id,"user_id": req.body.user_id});
+
+    query.exec(function (err, post) {
         if (err) {
             return next(err);
         }
-        res.json(pst);
+        if (!post) {
+            return next(new Error('not found ' + id));
+        }
+        res.json(post);
     });
-}); */
+    
+});
 
 // werkt
 router.post('/API/post', function (req, res, next) {
