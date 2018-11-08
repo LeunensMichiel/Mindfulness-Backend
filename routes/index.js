@@ -31,6 +31,8 @@ router.get('/API/sessionmaps', function (req, res, next) {
 
 });
 
+
+
 router.post('/API/sessionmap', function (req, res, next) {
     let sessionmap = new Sessionmap({
         titleCourse: req.body.titleCourse
@@ -139,6 +141,8 @@ router.put('/API/session/:session', function(req, res, next){
 router.get('/API/sessions/:sessionmapid', function (req, res, next) {
     res.json(req.sessions);
 });
+
+
 
 router.param('sessionmapid', function (req, res, next, id) {
     let query = Session.find({"sessionmap_id": id});
