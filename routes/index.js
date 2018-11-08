@@ -302,8 +302,7 @@ router.param('userid', function (req, res, next, id) {
 
 // get post met al die id's
 router.post('/API/getpost', function (req, res, next) {
-    console.log(req.body);
-    let query = Post.find({"sessionmap_id":req.body.sessionmap_id,"session_id":req.body.session_id,
+    let query = Post.findOne({"sessionmap_id":req.body.sessionmap_id,"session_id":req.body.session_id,
                           "exercise_id":req.body.exercise_id,"page_id":req.body.page_id,"user_id": req.body.user_id});
 
     query.exec(function (err, post) {
