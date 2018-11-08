@@ -70,6 +70,7 @@ router.get('/API/user/:user', function (req, res, next) {
 })
 
 router.param('user', function (req, res, next, id) {
+
     let query = User.findById(id).populate("group");
 
     query.exec(function (err, user) {
@@ -86,15 +87,29 @@ router.param('user', function (req, res, next, id) {
     })
 });
 
-router.put('/API/user/:user', function (req, res, next) {
-    req.user.unlocked_sessions.push(req.body.session_id);
+router.post('/API/user', function (req, res, next) {
+    let query = User.findById(req.body.id);
 
-    req.user.save(function (err) {
+    query.exec(function (err, user) {
         if (err) {
-            return res.send(err);
+            return next(err);
         }
-        res.json(req.user);
-    })
+
+        if (!user) {
+            return next(new Error('not found' + id));
+        }
+
+        user.unlocked_sessions.push(req.body.session_id);
+        user.save(function (err) {
+            if (err) {
+                return res.send(err);
+            }
+            res.json(user);
+        });
+
+    });
+
+
 });
 
 
