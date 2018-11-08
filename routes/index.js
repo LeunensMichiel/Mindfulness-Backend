@@ -370,7 +370,7 @@ router.put('/API/post/:post', function(req,res,next){
         if(err){
             return res.send(err);
         }
-        res.json(req.body);
+        res.json(req.post);
     })
 });
 
