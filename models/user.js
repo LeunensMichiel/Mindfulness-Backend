@@ -9,12 +9,17 @@ let UserSchema = new mongoose.Schema({
     hash: String,
     salt: String,
     rights: Number,
-    current_session: mongoose.Types.ObjectId,
-    current_exercise: mongoose.Types.ObjectId,
-    Group: {
+    unlocked_sessions: [String],
+    current_session_id: mongoose.Types.ObjectId,
+    current_exercise_id: mongoose.Types.ObjectId,
+    group: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'group'
-    }
+    },
+    posts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'post'
+    }]
 });
 
 UserSchema.methods.setPassword = function (password) {

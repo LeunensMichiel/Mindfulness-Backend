@@ -1,7 +1,6 @@
 let mongoose = require("mongoose");
 
 let SessionSchema = new mongoose.Schema({
-    id: String,
     title: String,
     position: Number,
     sessionmap_id: mongoose.Schema.Types.ObjectId
@@ -14,5 +13,7 @@ SessionSchema.pre('remove', function(next) {
         {safe: true, multi: true},
         next)
 });
+
+
 
 mongoose.model('session', SessionSchema);
