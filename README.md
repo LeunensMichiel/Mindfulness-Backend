@@ -1,2 +1,4 @@
 # projecten3-1819-backend-groep3-mindfulness
-# projecten3studserver03.westeurope.cloudapp.azure.com
+
+server address:
+projecten3studserver03.westeurope.cloudapp.azure.com:3000

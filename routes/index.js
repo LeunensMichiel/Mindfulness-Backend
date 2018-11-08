@@ -24,12 +24,11 @@ router.get('/API/sessionmaps', function (req, res, next) {
         if (err) {
             return next(err);
         }
-
         res.json(sessionmaps);
     });
-
-
 });
+
+
 
 router.post('/API/sessionmap', function (req, res, next) {
     let sessionmap = new Sessionmap({
@@ -201,7 +200,30 @@ router.param('session', function (req, res, next, id) {
     })
 });
 
-router.get('/API/exercises/:exercise', function (req, res, next) {
+router.delete('/API/session/:session', function (req, res) {
+    req.session.remove(function (err) {
+        if (err) {
+            return next(err)
+        }
+        res.json(req.session);
+    });
+});
+
+router.put('/API/session/:session', function (req, res, next) {
+    let session = req.session;
+    session.title = req.body.title;
+    session.position = req.body.position;
+    session.sessionmap_id = req.body.sessionmap_id;
+    session.save(function (err) {
+        if (err) {
+            return res.send(err);
+        }
+        res.json(req.body);
+    })
+});
+
+//Exercise
+router.get('/API/exercises/:session', function (req, res, next) {
     res.json(req.exercise);
 });
 
@@ -303,7 +325,7 @@ router.param('page', function (req, res, next, id) {
         if (!page) { return next("Page not found id: " + id); }
         req.page = page;
         return next();
-    });  
+    });
 });
 
 router.delete('/API/exercise/:excerciseWpages', function (req, res) {
@@ -397,6 +419,32 @@ router.param('exercise', function (req, res, next, id) {
     })
 });
 
+router.delete('/API/exercises/:exercise', function (req, res) {
+    Exercise.remove({ _id: { $in: req.exercise.pages } }, function (err) {
+        if (err) return next(err);
+        req.exercise.remove(function (err) {
+            if (err) {
+                return next(err)
+            }
+            res.json(req.exercise);
+        });
+    });
+});
+
+router.put('/API/exercise/:exercise', function (req, res, next) {
+    let exercise = req.exercise;
+    exercise.title = req.body.title;
+    exercise.position = req.body.position;
+    exercise.session_id = req.body.session_id;
+    exercise.save(function (err) {
+        if (err) {
+            return res.send(err);
+        }
+        res.json(req.body);
+    })
+});
+
+//Pages
 router.get('/API/pages/:page', function (req, res, next) {
     res.json(req.pagess);
 });
@@ -473,24 +521,25 @@ router.param('userid', function (req, res, next, id) {
         return next();
     });
 });
-/*
-router.post('/API/post', function (req, res, next) {
-    let post = new Post({
-        sessionmap_id: req.body.sessionmap_id,
-        session_id: req.body.session_id,
-        exercise_id: req.body.exercise_id,
-        page_id: req.body.exercise_id,
-        inhoud: req.body.inhoud,
-        afbeelding: req.body.afbeelding,
-        user_id: req.body.user_id
+
+// get post met al die id's
+router.post('/API/getpost', function (req, res, next) {
+    let query = Post.findOne({
+        "sessionmap_id": req.body.sessionmap_id, "session_id": req.body.session_id,
+        "exercise_id": req.body.exercise_id, "page_id": req.body.page_id, "user_id": req.body.user_id
     });
-    post.save(function (err, pst) {
+
+    query.exec(function (err, post) {
         if (err) {
             return next(err);
         }
-        res.json(pst);
+        if (!post) {
+            return next(new Error('not found ' + id));
+        }
+        res.json(post);
     });
-}); */
+
+});
 
 // werkt
 router.post('/API/post', function (req, res, next) {

@@ -29,7 +29,7 @@ router.post('/register', function (req, res, next) {
         //user.lastname = req.body.lastname;
         user.email = req.body.email;
         user.rights = 2; // 2 = client, 1 = beheerder
-        user.groups = group;
+        user.group = group;
         user.setPassword(req.body.password);
         user.save(function (err) {
             if (err) {
@@ -59,5 +59,28 @@ router.post('/login', function(req, res, next) {
         }
     })(req, res, next);
 });
+
+router.get('/API/user/:user', function(req, res, next){
+    res.json(req.user)
+
+})
+
+router.param('user', function(req, res, next, id){
+    let query = User.findById(id).populate("group");
+
+    query.exec(function(err, user){
+        if(err){
+            return next(err);
+        }
+
+        if(!user){
+            return next(new Error('not found' + id));
+        }
+
+        req.user = user;
+        return next();
+    })
+});
+
 
 module.exports = router;
