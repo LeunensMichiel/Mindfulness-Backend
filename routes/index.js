@@ -263,7 +263,7 @@ router.param('paragraph', function (req, res, next, id) {
 });
 
 //post
-    // werkt
+    // werkt en wordt nog niet gebruikt
 router.get('/API/posts', function (req, res, next) {
     let query = Post.find();
     query.exec(function (err, posts) {
@@ -301,6 +301,7 @@ router.param('userid', function (req, res, next, id) {
 }); */
 
 // get post met al die id's
+// werkt en wordt gebruikt
 router.post('/API/getpost', function (req, res, next) {
     let query = Post.findOne({"sessionmap_id":req.body.sessionmap_id,"session_id":req.body.session_id,
                           "exercise_id":req.body.exercise_id,"page_id":req.body.page_id,"user_id": req.body.user_id});
@@ -317,13 +318,13 @@ router.post('/API/getpost', function (req, res, next) {
     
 });
 
-    // werkt
+// werkt en wordt gebruikt
 router.post('/API/post', function (req, res, next) {
     let post = new Post({
         sessionmap_id: req.body.sessionmap_id,
         session_id: req.body.session_id,
         exercise_id: req.body.exercise_id,
-        page_id: req.body.exercise_id,
+        page_id: req.body.page_id,
         inhoud: req.body.inhoud,
         afbeelding: req.body.afbeelding,
         user_id: req.body.user_id
@@ -352,6 +353,41 @@ router.post('/API/post', function (req, res, next) {
             });
         });
     });
+});
+
+// werkt en wordt gebruikt
+router.put('/API/post/:post', function(req,res,next){
+    let post = req.post;
+    post.sessionmap_id = req.body.sessionmap_id;
+    post.session_id = req.body.session_id;
+    post.exercise_id = req.body.exercise_id;
+    post.page_id = req.body.page_id;
+    post.inhoud = req.body.inhoud;
+    post.afbeelding = req.body.afbeelding;
+    post.user_id = req.body.user_id;
+    
+    post.save(function (err){
+        if(err){
+            return res.send(err);
+        }
+        res.json(req.body);
+    })
+});
+
+// werkt en wordt gebruikt
+router.param('post',function(req,res,next,id){
+    let query = Post.findById(id);
+    console.log(id);
+    query.exec(function(err,post){
+        if(err){
+            return next(err);
+        }
+        if(!post){
+            return next(new Error('not found '+id));
+        }
+        req.post = post;
+        return next();
+    })
 });
 
 module.exports = router;
