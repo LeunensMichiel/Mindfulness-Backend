@@ -9,6 +9,7 @@ let UserSchema = new mongoose.Schema({
     hash: String,
     salt: String,
     rights: Number,
+    unlocked_sessions: [String],
     current_session_id: mongoose.Types.ObjectId,
     current_exercise_id: mongoose.Types.ObjectId,
     group: {

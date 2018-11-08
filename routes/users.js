@@ -23,7 +23,7 @@ router.post('/register', function (req, res, next) {
     }
 
     let query = Group.findById(req.body.groups_code);
-    query.exec(function(err, group){
+    query.exec(function (err, group) {
         let user = new User();
         //user.firstname = req.body.firstname;
         //user.lastname = req.body.lastname;
@@ -35,51 +35,81 @@ router.post('/register', function (req, res, next) {
             if (err) {
                 return next(err);
             }
-            return res.json({token: user.generateJWT(),
-                            _id: user._id})
+            return res.json({
+                token: user.generateJWT(),
+                _id: user._id
+            })
         });
     });
 
 });
 
-router.post('/login', function(req, res, next) {
+router.post('/login', function (req, res, next) {
     if (!req.body.email || !req.body.password) {
         return res.status(400).json({message: 'email of wachtwoord was niet ingevuld'});
     }
 
-    passport.authenticate('local', function(err, user, info) {
+    passport.authenticate('local', function (err, user, info) {
         if (err) {
             return next(err);
         }
         if (user) {
-            return res.json({token: user.generateJWT(),
-                _id: user._id});
+            return res.json({
+                token: user.generateJWT(),
+                _id: user._id
+            });
         } else {
             return res.status(401).json(info);
         }
     })(req, res, next);
 });
 
-router.get('/API/user/:user', function(req, res, next){
+router.get('/API/user/:user', function (req, res, next) {
     res.json(req.user)
 
 })
 
-router.param('user', function(req, res, next, id){
+router.param('user', function (req, res, next, id) {
+
     let query = User.findById(id).populate("group");
 
-    query.exec(function(err, user){
-        if(err){
+    query.exec(function (err, user) {
+        if (err) {
             return next(err);
         }
 
-        if(!user){
+        if (!user) {
             return next(new Error('not found' + id));
         }
 
         req.user = user;
         return next();
     })
+});
+
+router.post('/API/user', function (req, res, next) {
+    let query = User.findById(req.body.id);
+
+    query.exec(function (err, user) {
+        if (err) {
+            return next(err);
+        }
+
+        if (!user) {
+            return next(new Error('not found' + id));
+        }
+
+        user.unlocked_sessions.push(req.body.session_id);
+        user.save(function (err) {
+            if (err) {
+                return res.send(err);
+            }
+            res.json({result: "geslaagd"});
+        });
+
+    });
+
+
 });
 
 
