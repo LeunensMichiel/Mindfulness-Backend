@@ -104,7 +104,7 @@ router.post('/API/user', function (req, res, next) {
             if (err) {
                 return res.send(err);
             }
-            res.json(user);
+            res.send("geslaagd");
         });
 
     });
