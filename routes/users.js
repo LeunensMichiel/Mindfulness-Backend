@@ -29,7 +29,7 @@ router.post('/register', function (req, res, next) {
         //user.lastname = req.body.lastname;
         user.email = req.body.email;
         user.rights = 2; // 2 = client, 1 = beheerder
-        user.groups = group;
+        user.group = group;
         user.setPassword(req.body.password);
         user.save(function (err) {
             if (err) {

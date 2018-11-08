@@ -27,8 +27,6 @@ router.get('/API/sessionmaps', function (req, res, next) {
 
         res.json(sessionmaps);
     });
-
-
 });
 
 router.post('/API/sessionmap', function (req, res, next) {
