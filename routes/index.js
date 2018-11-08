@@ -212,7 +212,7 @@ router.put('/API/session/:session', function (req, res, next) {
 });
 
 //Exercise
-router.get('/API/exercises/:exercise', function (req, res, next) {
+router.get('/API/exercises/:session', function (req, res, next) {
     res.json(req.exercise);
 });
 
@@ -228,15 +228,31 @@ router.param('exercise', function (req, res, next, id) {
         req.exercise = exercise;
         return next();
     })
-}); 
+});
 
 router.delete('/API/exercises/:exercise', function (req, res) {
-    req.exercise.remove(function (err) {
-        if (err) { 
-            return next(err)
-        }
-        res.json(req.exercise);
+    Exercise.remove({ _id: { $in: req.exercise.pages } }, function (err) {
+        if (err) return next(err);        
+        req.exercise.remove(function (err) {
+            if (err) {
+                return next(err)
+            }
+            res.json(req.exercise);
+        });
     });
+});
+
+router.put('/API/exercise/:exercise', function (req, res, next) {
+    let exercise = req.exercise;
+    exercise.title = req.body.title;
+    exercise.position = req.body.position;
+    exercise.session_id = req.body.session_id;
+    exercise.save(function (err) {
+        if (err) {
+            return res.send(err);
+        }
+        res.json(req.body);
+    })
 });
 
 //Pages
@@ -300,11 +316,11 @@ router.get('/API/posts', function (req, res, next) {
 router.get('/API/posts/:userid', function (req, res, next) {
     res.json(req.posts);
 });
-
+ 
 router.param('userid', function (req, res, next, id) {
     console.log("test");
     let query = Post.find({ "user_id": id });
-
+ 
     query.exec(function (err, posts) {
         if (err) {
             return next(err);
@@ -319,8 +335,10 @@ router.param('userid', function (req, res, next, id) {
 
 // get post met al die id's
 router.post('/API/getpost', function (req, res, next) {
-    let query = Post.findOne({"sessionmap_id":req.body.sessionmap_id,"session_id":req.body.session_id,
-                          "exercise_id":req.body.exercise_id,"page_id":req.body.page_id,"user_id": req.body.user_id});
+    let query = Post.findOne({
+        "sessionmap_id": req.body.sessionmap_id, "session_id": req.body.session_id,
+        "exercise_id": req.body.exercise_id, "page_id": req.body.page_id, "user_id": req.body.user_id
+    });
 
     query.exec(function (err, post) {
         if (err) {
@@ -331,7 +349,7 @@ router.post('/API/getpost', function (req, res, next) {
         }
         res.json(post);
     });
-    
+
 });
 
 // werkt
