@@ -200,6 +200,7 @@ router.param('session', function (req, res, next, id) {
     })
 });
 
+
 router.delete('/API/session/:session', function (req, res) {
     req.session.remove(function (err) {
         if (err) {
@@ -220,6 +221,11 @@ router.put('/API/session/:session', function (req, res, next) {
         }
         res.json(req.body);
     })
+});
+
+router.post('/API/session/:session/exercises', function (req, res, next) {
+    let ex = new Exercise(req.body);
+    ex.ses
 });
 
 //Exercise
@@ -310,10 +316,10 @@ router.delete('/API/page/:page', function (req, res, next) {
     for (var i = 0; i < req.page.paragraphs.length; i++) {
         parids.push(req.page.paragraphs[i]._id);
     }
-    Paragraph.deleteMany({ "_id": parids}, function (err, pars) {
+    Paragraph.deleteMany({ "_id": parids }, function (err, pars) {
         if (err) { return next(err); }
         Page.findByIdAndDelete(req.page._id, function (err, data) {
-            if (err) {return next(err); }
+            if (err) { return next(err); }
             res.json(data);
         });
     });
@@ -405,8 +411,18 @@ router.param('emptyExercise', function (req, res, next, id) {
     })
 })
 
+router.get('/API/exercise/:exercise', function (req, res, next) {
+    res.json(req.exercise);
+})
+
 router.param('exercise', function (req, res, next, id) {
-    let query = Exercise.find({ session_id: id });
+    let query = Exercise.find({ session_id: id }).populate({
+        path: 'pages',
+        populate: {
+            path: 'paragraphs',
+            model: 'paragraph'
+        }
+    });
     query.exec(function (err, exercise) {
         if (err) {
             return next(err);
