@@ -3,13 +3,16 @@ let mongoose = require("mongoose");
 let SessionSchema = new mongoose.Schema({
     title: String,
     position: Number,
-    sessionmap_id: mongoose.Schema.Types.ObjectId
+    sessionmap_id: mongoose.Schema.Types.ObjectId,
+    exercises: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'exercise'
+    }]
 });
 
 SessionSchema.pre('remove', function (next) {
-    this.model('sessionmap').update({},
-        { $pull: { sessions: this._id } },
-        { safe: true, multi: true },
+    this.model('exercise').deleteMany(
+        { _id: { $in: this.execPopulate } },
         next)
 });
 
