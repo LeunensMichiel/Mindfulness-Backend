@@ -23,9 +23,16 @@ require('./models/post');
 
 require('./config/passport');
 
-var indexRouter = require('./routes/index');
+// var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var fileRouter = require('./routes/files');
+var exerciseRouter = require('./routes/exercise');
+var sessionRouter = require('./routes/session');
+var sessionmapRouter = require('./routes/sessionmap');
+var pageRouter = require('./routes/page');
+var postRouter = require('./routes/post');
+var paragraphRouter = require('./routes/paragraph');
+
 var app = express();
 
 app.use(logger('dev'));
@@ -35,7 +42,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
-app.use('/', indexRouter);
+// app.use('/', indexRouter);
+app.use('/exercise', exerciseRouter);
+app.use('/session', sessionRouter);
+app.use('/sessionmap', sessionmapRouter);
+app.use('/page', pageRouter);
+app.use('/post', postRouter);
+app.use('/paragraph', paragraphRouter);
 app.use('/users', usersRouter);
 app.use('/file', fileRouter);
 
