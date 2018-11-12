@@ -15,43 +15,30 @@ let auth = jwt({
 });
 
 
-
-router.post('/API/session', function (req, res, next) {
-    let session = new Session({
-        title: req.body.title,
-        position: req.body.position,
-        sessionmap_id: req.body.sessionmap_id
-    });
+router.post('/session', function (req, res, next) {
+    let session = new Session(req.body);
 
     session.save(function (err, session) {
         if (err) {
             return next(err);
         }
+        let sessionmapQuerry = Sessionmap.updateOne({_id: req.body.sessionmap_id}, {'$push': {sessions: session}});
 
-        let sessionQuery = Sessionmap.findById(session.sessionmap_id);
-        sessionQuery.exec(function (err, sessionmap) {
+        sessionmapQuerry.exec(function (err, sessionmap) {
             if (err) {
                 return next(err);
             }
 
-            sessionmap.sessions.push(session);
+            res.json(session);
 
-            sessionmap.save(function (err, sessonmap) {
-                if (err) {
-                    return next(err);
-                }
-
-                res.json(session);
-            });
         });
     });
 });
 
-router.put('/API/session/:session', function (req, res, next) {
+router.put('/session/:session', function (req, res, next) {
     let session = req.session;
     session.title = req.body.title;
     session.position = req.body.position;
-    session.sessionmap_id = req.body.sessionmap_id;
     session.save(function (err) {
         if (err) {
             return res.send(err);
@@ -60,7 +47,7 @@ router.put('/API/session/:session', function (req, res, next) {
     })
 });
 
-router.get('/API/sessions/:sessionmapid', function (req, res, next) {
+router.get('/sessions/:sessionmapid', function (req, res, next) {
     res.json(req.sessions);
 });
 
@@ -78,11 +65,11 @@ router.param('sessionmapid', function (req, res, next, id) {
     })
 });
 
-router.get('/API/session/:session', function (req, res, next) {
+router.get('/session/:session', function (req, res, next) {
     res.json(req.session);
 });
 
-router.delete('/API/session/:session', function (req, res) {
+router.delete('/session/:session', function (req, res) {
     req.session.remove(function (err) {
         if (err) {
             return next(err)

@@ -13,7 +13,7 @@ let auth = jwt({
     _userProperty: 'payload'
 });
 
-router.get('/API/sessionmap/:sessionmap', function (req, res, next) {
+router.get('/sessionmap/:sessionmap', function (req, res, next) {
     res.json(req.sessionmap);
 });
 
@@ -35,7 +35,7 @@ router.param('sessionmap', function (req, res, next, id) {
     })
 });
 
-router.get('/API/sessionmaps', function (req, res, next) {
+router.get('/sessionmaps', function (req, res, next) {
     let query = Sessionmap.find().populate("sessions");
     query.exec(function (err, sessionmaps) {
         if (err) {
@@ -47,7 +47,7 @@ router.get('/API/sessionmaps', function (req, res, next) {
 
 
 
-router.post('/API/sessionmap', function (req, res, next) {
+router.post('/sessionmap', function (req, res, next) {
     let sessionmap = new Sessionmap({
         titleCourse: req.body.titleCourse
     });
@@ -60,7 +60,7 @@ router.post('/API/sessionmap', function (req, res, next) {
 
 });
 
-router.delete('/API/sessionmap/:sessionmap', function (req, res) {
+router.delete('/sessionmap/:sessionmap', function (req, res) {
     Sessionmap.remove({ _id: { $in: req.sessionmap.sessions } }, function (err) {
         if (err) return next(err);
         req.sessionmap.remove(function (err) {
@@ -72,7 +72,7 @@ router.delete('/API/sessionmap/:sessionmap', function (req, res) {
     });
 });
 
-router.put('/API/sessionmap/:sessionmap/update', function (req, res) {
+router.put('/sessionmap/:sessionmap/update', function (req, res) {
     let sessionmap = req.sessionmap;
     sessionmap.titleCourse = req.body.titleCourse;
     sessionmap.save(function (err) {

@@ -18,11 +18,11 @@ let auth = jwt({
     _userProperty: 'payload'
 });
 
-router.get('/API/pages/:exercise_id', function (req, res, next) {
+router.get('/pages/:exercise_id', function (req, res, next) {
     res.json(req.pagess);
 });
 
-router.post('/API/page', function (req, res, next) {
+router.post('/page', function (req, res, next) {
     let page = new Page(req.body);
 
     page.save(function (err, page) {
@@ -40,7 +40,7 @@ router.post('/API/page', function (req, res, next) {
     });
 });
 
-router.put('/API/page/:page', function(req, res ,next){
+router.put('/page/:page', function(req, res ,next){
     req.page.title = req.body.title;
     req.page.pathAudio = req.body.pathAudio;
     req.page.description = req.body.description;
@@ -53,7 +53,7 @@ router.put('/API/page/:page', function(req, res ,next){
     })
 });
 
-router.delete('/API/page/:page', function (req, res, next) {
+router.delete('/page/:page', function (req, res, next) {
     req.page.remove(function (err) {
         if (err) return next(err);
 

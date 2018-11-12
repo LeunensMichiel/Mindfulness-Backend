@@ -22,7 +22,7 @@ let auth = jwt({
 
 
 // paragraph
-router.get('/API/paragraphs/:paragraph', function (req, res, next) {
+router.get('/paragraphs/:paragraph', function (req, res, next) {
     res.json(req.paragraphs);
 });
 
@@ -41,4 +41,4 @@ router.param('paragraph', function (req, res, next, id) {
     });
 });
 
-module.exports = router;
+module.exports = router; 

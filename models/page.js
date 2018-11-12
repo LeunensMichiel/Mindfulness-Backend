@@ -5,7 +5,6 @@ let PageSchema = new mongoose.Schema({
     pathAudio: String,
     description: String,
     position: Number,
-    // exercise_id: mongoose.Schema.Types.ObjectId,
     type: String,
     paragraphs: [{
         id: mongoose.Schema.Types.ObjectId,

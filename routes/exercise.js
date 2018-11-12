@@ -18,7 +18,7 @@ let auth = jwt({
     _userProperty: 'payload'
 });
 
-router.get('/API/exercises/:session_id', function (req, res, next) {
+router.get('/exercises/:session_id', function (req, res, next) {
     res.json(req.exercises);
 });
 
@@ -42,11 +42,30 @@ router.param('session_id', function (req, res, next, id) {
     })
 });
 
-router.get('/API/exercise/:exercise', function (req, res, next) {
+router.get('/exercise/:exercise', function (req, res, next) {
     res.json(req.exercise);
 });
 
-router.delete('/API/exercises/:exercise', function (req, res) {
+router.post('/API/exerciseWpages', function (req, res, next) {
+    let ex = new Exercise(req.body);
+    ex.save(function (err, exercise) {
+        if (err) {
+            return next(err);
+        }
+
+        let exerciseQuerry = Session.updateOne({_id: req.body.session_id}, {'$push': {exercises: exercise}});
+        exerciseQuerry.exec(function (err, session) {
+            if (err) {
+                return next(err);
+            }
+
+            res.json(exercise);
+
+        });
+    });
+});
+
+router.delete('/exercises/:exercise', function (req, res) {
     Exercise.remove({ _id: { $in: req.exercise.pages } }, function (err) {
         if (err) return next(err);
         req.exercise.remove(function (err) {
@@ -58,7 +77,7 @@ router.delete('/API/exercises/:exercise', function (req, res) {
     });
 });
 
-router.put('/API/exercise/:exercise', function (req, res, next) {
+router.put('/exercise/:exercise', function (req, res, next) {
     let exercise = req.exercise;
     exercise.title = req.body.title;
     exercise.position = req.body.position;

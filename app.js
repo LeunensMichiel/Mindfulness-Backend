@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 let passport = require('passport');
 
-var fs = require('fs')
+var fs = require('fs');
 
 mongoose.connect('mongodb://projecten3studserver03.westeurope.cloudapp.azure.com/mindfulnessdb', { useNewUrlParser: true });
 require('./models/user');
@@ -43,12 +43,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
 // app.use('/', indexRouter);
-app.use('/exercise', exerciseRouter);
-app.use('/session', sessionRouter);
-app.use('/sessionmap', sessionmapRouter);
-app.use('/page', pageRouter);
-app.use('/post', postRouter);
-app.use('/paragraph', paragraphRouter);
+app.use('/API/exercise', exerciseRouter);
+app.use('/API/session', sessionRouter);
+app.use('/API/sessionmap', sessionmapRouter);
+app.use('/API/page', pageRouter);
+app.use('/API/post', postRouter);
+app.use('/API/paragraph', paragraphRouter);
 app.use('/users', usersRouter);
 app.use('/file', fileRouter);
 

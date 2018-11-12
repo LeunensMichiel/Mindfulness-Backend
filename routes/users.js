@@ -64,7 +64,7 @@ router.post('/login', function (req, res, next) {
     })(req, res, next);
 });
 
-router.get('/API/user/:user', function (req, res, next) {
+router.get('/user/:user', function (req, res, next) {
     res.json(req.user)
 
 })
@@ -87,7 +87,7 @@ router.param('user', function (req, res, next, id) {
     })
 });
 
-router.post('/API/user', function (req, res, next) {
+router.post('/user', function (req, res, next) {
     let query = User.findById(req.body.id);
 
     query.exec(function (err, user) {
