@@ -229,7 +229,7 @@ router.post('/API/session/:session/exercises', function (req, res, next) {
 });
 
 //Exercise
-router.get('/API/exercises/:session', function (req, res, next) {
+router.get('/API/exercises/:session_id', function (req, res, next) {
     res.json(req.exercise);
 });
 
@@ -434,7 +434,7 @@ router.get('/API/exercise/:exercise', function (req, res, next) {
     res.json(req.exercise);
 });
 
-router.param('exercise', function (req, res, next, id) {
+router.param('session_id', function (req, res, next, id) {
     let query = Exercise.find({ session_id: id }).populate({
         path: 'pages',
         populate: {
@@ -452,6 +452,7 @@ router.param('exercise', function (req, res, next, id) {
         req.exercise = exercise;
         return next();
     })
+    console.log('we komen hier');
 });
 
 router.delete('/API/exercises/:exercise', function (req, res) {
