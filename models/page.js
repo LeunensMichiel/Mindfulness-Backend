@@ -5,22 +5,21 @@ let PageSchema = new mongoose.Schema({
     pathAudio: String,
     description: String,
     position: Number,
-    exercise_id: mongoose.Schema.Types.ObjectId,
+    // exercise_id: mongoose.Schema.Types.ObjectId,
     type: String,
     paragraphs: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'paragraph'
+        id: mongoose.Schema.Types.ObjectId,
+        position: Number,
+        formType:String,
+        filename:String,
+        pathname:String,
+        description:String
     }]
 });
 
 PageSchema.pre('remove', function (next) {
     this.model('exercise').update({},
         { $pull: { pages: this._id } },
-        { safe: true, multi: true },
-        next
-    );
-    this.model('paragraphs').deleteMany(
-        { _id: { $in: this.paragraphs } },
         { safe: true, multi: true },
         next
     );
