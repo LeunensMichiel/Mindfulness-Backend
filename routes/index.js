@@ -294,6 +294,21 @@ router.post('/API/exercise/:excerciseWpages/page', function (req, res, next) {
     });
 });
 
+router.put('/API/page/:page', function(req, res ,next){
+    console.log("1");
+    req.page.title = req.body.title;
+    req.page.pathAudio = req.body.pathAudio;
+    req.page.description = req.body.description;
+    req.page.position = req.body.position;
+    req.page.exercise_id = req.body.exercise_id;
+    console.log("2");
+    req.page.save(function(err, page){
+        if (err) {return next(err); }
+        console.log("3");
+        res.json(page);
+    })
+});
+
 router.post('/API/page/:page/paragraph', function (req, res, next) {
     let par = new Paragraph();
     par.position = req.body.position;
@@ -326,15 +341,19 @@ router.delete('/API/page/:page', function (req, res, next) {
 });
 
 router.param('page', function (req, res, next, id) {
-    let query = Page.findById(id, function (err, page) {
+    let query = Page.findById(id).populate("paragraphs");
+    console.log("1");
+    query.exec(function (err, page) {
         if (err) { return next(err); }
         if (!page) { return next("Page not found id: " + id); }
+        console.log("2");
         req.page = page;
         return next();
     });
 });
 
 router.delete('/API/exercise/:excerciseWpages', function (req, res) {
+    req.exercise.remove();
     var pageids = [];
     var parids = [];
     for (var i = 0; i < req.exercise.pages.length; i++) {
