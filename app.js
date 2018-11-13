@@ -32,6 +32,7 @@ var sessionmapRouter = require('./routes/sessionmap');
 var pageRouter = require('./routes/page');
 var postRouter = require('./routes/post');
 var paragraphRouter = require('./routes/paragraph');
+var groupRouter = require('./routes/group');
 
 var app = express();
 
@@ -49,6 +50,7 @@ app.use('/API/sessionmap', sessionmapRouter);
 app.use('/API/page', pageRouter);
 app.use('/API/post', postRouter);
 app.use('/API/paragraph', paragraphRouter);
+app.use('/API/group', groupRouter);
 app.use('/users', usersRouter);
 app.use('/file', fileRouter);
 
