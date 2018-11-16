@@ -35,4 +35,29 @@ router.post('/group', function (req, res, next) {
     });
 });
 
+router.put('/group/:group',function(req,res,next){
+    let group = req.group;
+    group.name = req.body.name;
+    group.save(function (err){
+        if(err){
+            return res.send(err);
+        }
+        res.json(req.group);
+    })
+});
+
+router.param('group',function(req,res,next,id){
+    let query = Group.findById(id);
+    query.exec(function(err,group){
+        if(err){
+            return next(err);
+        }
+        if(!group){
+            return next(new Error('not found '+id));
+        }
+        req.group = group;
+        return next();
+    })
+});
+
 module.exports = router;
