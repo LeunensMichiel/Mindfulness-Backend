@@ -4,6 +4,7 @@ let router = express.Router();
 let mongoose = require("mongoose");
 
 let Group = mongoose.model('group');
+let User = mongoose.model('user');
 
 let jwt = require('express-jwt');
 
@@ -58,6 +59,20 @@ router.param('group',function(req,res,next,id){
         req.group = group;
         return next();
     })
+});
+
+router.delete('/group/:group',function(req,res){
+    let group = req.group;
+    let idvangroep = req.group.id;
+    
+    req.group.remove(function(err){
+        if(err){
+            return next(err)
+        }
+    }); 
+
+    let query = User.updateMany({group:idvangroep},{'$set': {group:null}});
+    res.json(req.group);
 });
 
 module.exports = router;
