@@ -5,6 +5,7 @@ let mongoose = require("mongoose");
 
 let Group = mongoose.model('group');
 let User = mongoose.model('user');
+let Sessionmap = mongoose.model('sessionmap');
 
 let jwt = require('express-jwt');
 
@@ -73,6 +74,16 @@ router.delete('/group/:group',function(req,res){
 
     let query = User.updateMany({group:idvangroep},{'$set': {group:null}});
     res.json(req.group);
+});
+
+router.get('/group/sessionmaps', function (req, res, next) {
+    let query = Sessionmap.find({},{_id:true,titleCourse:true});
+    query.exec(function (err, sessionmaps) {
+        if (err) {
+            return next(err);
+        }
+        res.json(sessionmaps);
+    });
 });
 
 module.exports = router;
