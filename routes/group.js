@@ -15,7 +15,11 @@ let auth = jwt({
 });
 
 router.get('/groups', function (req, res, next) {
-    let query = Group.find();
+    let query = Group.find().populate({
+        path: 'sessionmap_id',
+        model: 'sessionmap',
+        select: 'titleCourse'
+    });
     query.exec(function (err, groups) {
         if (err) {
             return next(err);
