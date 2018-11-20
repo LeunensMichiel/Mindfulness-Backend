@@ -59,7 +59,7 @@ router.post('/login', function (req, res, next) {
         }
 
         if (!user.roles.client) {
-            return res.status(401)
+            return res.status(401).json(info);
         }
 
         return res.json({
