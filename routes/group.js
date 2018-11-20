@@ -24,6 +24,8 @@ router.get('/groups', function (req, res, next) {
         if (err) {
             return next(err);
         }
+
+        console.log(groups);
         res.json(groups);
     });
 });

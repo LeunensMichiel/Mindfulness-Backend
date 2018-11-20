@@ -8,7 +8,12 @@ let UserSchema = new mongoose.Schema({
     email: {type: String, lowercase: true, unique: true},
     hash: String,
     salt: String,
-    rights: Number,
+    roles: {
+        admin: Boolean,
+        super_admin: Boolean,
+        client: Boolean,
+        nv_admin: Boolean
+    },
     unlocked_sessions: [String],
     current_session_id: mongoose.Types.ObjectId,
     current_exercise_id: mongoose.Types.ObjectId,

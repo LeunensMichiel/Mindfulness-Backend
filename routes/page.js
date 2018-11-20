@@ -8,7 +8,6 @@ let Page = mongoose.model('page');
 let Session = mongoose.model('session');
 let Exercise = mongoose.model('exercise');
 let Post = mongoose.model('post');
-let Paragraph = mongoose.model('paragraph');
 let User = mongoose.model('user');
 
 let jwt = require('express-jwt');
@@ -41,14 +40,19 @@ router.post('/page', function (req, res, next) {
 });
 
 router.put('/page/:page', function(req, res ,next){
+
     req.page.title = req.body.title;
     req.page.pathAudio = req.body.pathAudio;
     req.page.description = req.body.description;
     req.page.position = req.body.position;
+
     req.page.paragraphs = req.body.paragraphs;
 
     req.page.save(function(err, page){
-        if (err) {return next(err); }
+        if (err) {
+            console.log(err);
+            return next(err); }
+
         res.json(page);
     })
 });
