@@ -92,4 +92,14 @@ router.get('/group/sessionmaps', function (req, res, next) {
     });
 });
 
+router.get('/group/getUsers/:group', function (req, res, next) {
+    let query = User.find({group:req.group},{_id:false,email:true});
+    query.exec(function (err, users) {
+        if (err) {
+            return next(err);
+        }
+        res.json(users);
+    });
+});
+
 module.exports = router;
