@@ -19,7 +19,7 @@ let jwt = require('express-jwt');
 router.post('/register', function (req, res, next) {
 
     if (!req.body.email || !req.body.password || !req.body.groups_code) {
-        return res.status(400).json({message: 'email of wachtwoord of groups_code was niet ingevuld'});
+        return res.status(400).json({ message: 'email of wachtwoord of groups_code was niet ingevuld' });
     }
 
     let query = Group.findById(req.body.groups_code);
@@ -46,7 +46,7 @@ router.post('/register', function (req, res, next) {
 
 router.post('/login', function (req, res, next) {
     if (!req.body.email || !req.body.password) {
-        return res.status(400).json({message: 'email of wachtwoord was niet ingevuld'});
+        return res.status(400).json({ message: 'email of wachtwoord was niet ingevuld' });
     }
 
     passport.authenticate('local', function (err, user, info) {
@@ -104,13 +104,32 @@ router.post('/user', function (req, res, next) {
             if (err) {
                 return res.send(err);
             }
-            res.json({result: "geslaagd"});
+            res.json({ result: "geslaagd" });
         });
-
     });
-
-
 });
 
+router.put('/user', function (req, res, next) {
+    let query = User.findById(req.body._id);
+
+    query.exec(function (err, user) {
+        if (err) {
+            return next(err);
+        }
+
+        if (!user) {
+            return next(new Error('not found' + id));
+        }
+
+        user.group = req.body.group_id;
+
+        user.save(function (err) {
+            if (err) {
+                return res.send(err);
+            }
+            res.json(req.body);
+        })
+    });
+});
 
 module.exports = router;
