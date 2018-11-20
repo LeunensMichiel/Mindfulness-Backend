@@ -9,4 +9,10 @@ let SessionmapSchema = new mongoose.Schema({
 
 });
 
+SessionmapSchema.pre('remove', function (next) {
+    this.model('session').deleteMany(
+        { _id: { $in: this.sessions } },
+        next)
+})
+
 mongoose.model('sessionmap', SessionmapSchema);

@@ -5,6 +5,6 @@ let GroupSchema = new mongoose.Schema({
     sessionmap_id: {type: mongoose.Schema.Types.ObjectId,
                 ref: 'Sessionmaps'}
 
-});
+}); 
 
 mongoose.model('group', GroupSchema);
