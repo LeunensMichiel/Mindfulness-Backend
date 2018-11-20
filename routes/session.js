@@ -15,7 +15,7 @@ let auth = jwt({
 });
 
 
-router.post('/session', function (req, res, next) {
+router.post('/session', auth, function (req, res, next) {
     let session = new Session(req.body);
 
     session.save(function (err, session) {
@@ -35,7 +35,7 @@ router.post('/session', function (req, res, next) {
     });
 });
 
-router.put('/session/:session', function (req, res, next) {
+router.put('/session/:session', auth, function (req, res, next) {
     let session = req.session;
     session.title = req.body.title;
     session.position = req.body.position;
@@ -47,7 +47,7 @@ router.put('/session/:session', function (req, res, next) {
     })
 });
 
-router.get('/sessions/:sessionmapid', function (req, res, next) {
+router.get('/sessions/:sessionmapid', auth, function (req, res, next) {
     res.json(req.sessions);
 });
 
@@ -65,11 +65,11 @@ router.param('sessionmapid', function (req, res, next, id) {
     })
 });
 
-router.get('/session/:session', function (req, res, next) {
+router.get('/session/:session', auth, function (req, res, next) {
     res.json(req.session);
 });
 
-router.delete('/session/:session', function (req, res) {
+router.delete('/session/:session', auth,  function (req, res) {
     req.session.remove(function (err) {
         if (err) {
             return next(err)
@@ -96,7 +96,7 @@ router.param('session', function (req, res, next, id) {
     })
 });
 
-router.get('/session_detailed/:session_with_childs', function(req, res) {
+router.get('/session_detailed/:session_with_childs',auth,  function(req, res) {
    res.json(req.session);
 });
 

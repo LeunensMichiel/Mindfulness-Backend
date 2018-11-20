@@ -21,7 +21,7 @@ router.get('/pages/:exercise_id', function (req, res, next) {
     res.json(req.pagess);
 });
 
-router.post('/page', function (req, res, next) {
+router.post('/page', auth,  function (req, res, next) {
     let page = new Page(req.body);
 
     page.save(function (err, page) {
@@ -39,7 +39,7 @@ router.post('/page', function (req, res, next) {
     });
 });
 
-router.put('/page/:page', function(req, res ,next){
+router.put('/page/:page', auth,function(req, res ,next){
 
     req.page.title = req.body.title;
     req.page.pathAudio = req.body.pathAudio;
@@ -57,7 +57,7 @@ router.put('/page/:page', function(req, res ,next){
     })
 });
 
-router.delete('/page/:page', function (req, res, next) {
+router.delete('/page/:page', auth, function (req, res, next) {
     req.page.remove(function (err) {
         if (err) return next(err);
 

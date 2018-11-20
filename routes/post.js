@@ -19,7 +19,7 @@ let auth = jwt({
 
 
 //versie2
-router.post('/getpost', function (req, res, next) {
+router.post('/getpost', auth,  function (req, res, next) {
     let query = Post.findOne({"sessionmap_id":req.body.sessionmap_id,"session_id":req.body.session_id,
         "exercise_id":req.body.exercise_id,"page_id":req.body.page_id,"user_id": req.body.user_id});
 
@@ -71,7 +71,7 @@ router.post('/getpost', function (req, res, next) {
 
 
 // werkt en wordt gebruikt
-router.post('/post', function (req, res, next) {
+router.post('/post', auth, function (req, res, next) {
     let post = new Post({
         sessionmap_id: req.body.sessionmap_id,
         session_id: req.body.session_id,
@@ -108,7 +108,7 @@ router.post('/post', function (req, res, next) {
 });
 
 // werkt en wordt gebruikt
-router.put('/post/:post', function(req,res,next){
+router.put('/post/:post', auth, function(req,res,next){
     let post = req.post;
     post.sessionmap_id = req.body.sessionmap_id;
     post.session_id = req.body.session_id;
