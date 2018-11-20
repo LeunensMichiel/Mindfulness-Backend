@@ -5,7 +5,7 @@ var User = mongoose.model('user');
 
 
 passport.use(new LocalStrategy({
-        /*
+        /**
          * Because we use email instead of username as identifier
          * We need to tell passport specifically to look for the email field en not for the username field
          */

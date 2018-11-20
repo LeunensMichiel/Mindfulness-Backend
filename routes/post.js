@@ -8,7 +8,6 @@ let Page = mongoose.model('page');
 let Session = mongoose.model('session');
 let Exercise = mongoose.model('exercise');
 let Post = mongoose.model('post');
-let Paragraph = mongoose.model('paragraph');
 let User = mongoose.model('user');
 
 let jwt = require('express-jwt');

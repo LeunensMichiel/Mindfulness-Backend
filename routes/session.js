@@ -82,6 +82,7 @@ router.delete('/session/:session', function (req, res) {
 
 router.param('session', function (req, res, next, id) {
     let query = Session.findById(id);
+
     query.exec(function (err, session) {
         if (err) {
             return next(err);
@@ -89,7 +90,37 @@ router.param('session', function (req, res, next, id) {
         if (!session) {
             return next(new Error('not found ' + id));
         }
+
         req.session = session;
+        return next();
+    })
+});
+
+router.get('/session_detailed/:session_with_childs', function(req, res) {
+   res.json(req.session);
+});
+
+router.param('session_with_childs', function (req, res, next, id) {
+    let query = Session.findById(id).populate({
+        path: 'exercises',
+        populate: {
+            path: 'pages',
+            model: 'page'
+        }
+    });
+
+    query.exec(function (err, session) {
+        if (err) {
+            return next(err);
+        }
+        if (!session) {
+            return next(new Error('not found ' + id));
+        }
+
+        console.log(session);
+        console.log(session.exercises);
+        req.session = session;
+
         return next();
     })
 });
