@@ -61,12 +61,19 @@ router.post('/login', function (req, res, next) {
         if (!user.roles.client) {
             return res.status(401).json(info);
         }
-
-        return res.json({
-            token: user.generateJWT(),
-            _id: user._id
-        });
-
+        if (user) {
+            return res.json({
+                token: user.generateJWT(),
+                _id: user._id,
+                unlocked_sessions: user.unlocked_sessions,
+                current_session_id: user.current_session_id,
+                current_exercise_id: user.current_exercise_id,
+                post_ids: user.posts,
+                group: user.group
+            });
+        } else {
+            return res.status(401).json(info);
+        }
     })(req, res, next);
 });
 

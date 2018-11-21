@@ -18,6 +18,7 @@ let auth = jwt({
 });
 
 router.get('/pages/:exercise_id', function (req, res, next) {
+    console.log(req.pagess);
     res.json(req.pagess);
 });
 
