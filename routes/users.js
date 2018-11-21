@@ -109,19 +109,8 @@ router.post('/user', function (req, res, next) {
     });
 });
 
-router.put('/user', function (req, res, next) {
-    let query = User.findById(req.body._id);
-
-    query.exec(function (err, user) {
-        if (err) {
-            return next(err);
-        }
-
-        if (!user) {
-            return next(new Error('not found' + id));
-        }
-
-        user.group = req.body.group_id;
+router.put('/user/:user', function (req, res, next) {
+    user.group = req.body.group_id;
 
         user.save(function (err) {
             if (err) {
@@ -129,7 +118,6 @@ router.put('/user', function (req, res, next) {
             }
             res.json(req.body);
         })
-    });
 });
 
 module.exports = router;
