@@ -142,7 +142,7 @@ router.post('/checkemail', function (req, res, next) {
         });
 });
 
-router.get('/user/:user',auth, function (req, res, next) {
+router.get('/user/:user', auth, function (req, res, next) {
     res.json(req.user)
 
 })
@@ -159,7 +159,7 @@ router.param('user', function (req, res, next, id) {
         if (!user) {
             return next(new Error('not found' + id));
         }
-
+        console.log(user);
         req.user = user;
         return next();
     })
@@ -184,10 +184,38 @@ router.post('/user', auth, function (req, res, next) {
             }
             res.json({result: "geslaagd"});
         });
-
     });
+});
 
+router.put('/user/feedback', auth, function (req, res, next) {
+    let query = User.findById(req.body._id);
 
+    query.exec(function (err, user) {
+        if (err) {
+            return next(err);
+        }
+
+        if (!user) {
+            return next(new Error('not found' + id));
+        }
+
+        user.feedbackSubscribed = req.body.feedbackSubscribed;
+        user.save(function (err) {
+            if (err) {
+                return res.send(err);
+            }
+            res.json({result: "geslaagd"});
+        });
+    });
+    // console.log(req);
+    // req.user.feedbackSubscribed = req.body.feedbackSubscribed;
+    // console.log(req.user);
+    // req.user.save(function (err) {
+    //     if (err) {
+    //         return res.send(err);
+    //     }
+    //     res.json({result: "geslaagd"});
+    // });
 });
 
 
