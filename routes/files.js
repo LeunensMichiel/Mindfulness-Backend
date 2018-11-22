@@ -70,7 +70,7 @@ router.get('/file/:path',auth, function (req, res) {
 });
 
 router.param('path', function(req, res, next, id){
-    req.paht = id;
+    req.path = id;
 });
 //
 module.exports = router;
