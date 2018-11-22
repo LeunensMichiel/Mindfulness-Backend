@@ -62,15 +62,13 @@ let auth = jwt({
 //     });
 // });
 
-router.get('/file/:path',auth, function (req, res) {
+router.post('/file',auth, function (req, res) {
     // We used this as reference: https://medium.freecodecamp.org/node-js-streams-everything-you-need-to-know-c9141306be93
-    const src = fs.createReadStream(req.path);
+    const src = fs.createReadStream(req.body.path);
     src.pipe(res);
 
 });
 
-router.param('path', function(req, res, next, id){
-    req.path = id;
-});
+
 //
 module.exports = router;
