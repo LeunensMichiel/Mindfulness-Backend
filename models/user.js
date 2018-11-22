@@ -24,7 +24,8 @@ let UserSchema = new mongoose.Schema({
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'post'
-    }]
+    }],
+    feedbackSubscribed: Boolean
 });
 
 UserSchema.methods.setPassword = function (password) {

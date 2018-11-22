@@ -32,6 +32,7 @@ router.post('/register', function (req, res, next) {
         user.roles.client = true;
         user.group = group;
         user.setPassword(req.body.password);
+        user.feedbackSubscribed = true;
         user.save(function (err) {
             if (err) {
                 return next(err);
