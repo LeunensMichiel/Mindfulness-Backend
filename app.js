@@ -24,7 +24,7 @@ require('./config/passport');
 
 // var indexRouter = require('./routes/index');
 let userRouter = require('./routes/user');
-// let fileRouter = require('./routes/files');
+let fileRouter = require('./routes/files');
 let exerciseRouter = require('./routes/exercise');
 let sessionRouter = require('./routes/session');
 let sessionmapRouter = require('./routes/sessionmap');
@@ -51,7 +51,7 @@ app.use('/API/post', postRouter);
 // app.use('/API/paragraph', paragraphRouter);
 app.use('/API/group', groupRouter);
 app.use('/API/users', userRouter);
-// app.use('/file', fileRouter);
+app.use('/API/file', fileRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

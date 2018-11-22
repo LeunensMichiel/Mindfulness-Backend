@@ -11,7 +11,10 @@ let jwt = require('express-jwt');
  * http://www.passportjs.org/docs/oauth2-api/
  */
 
-
+let auth = jwt({
+    secret: process.env.MINDFULNESS_BACKEND_SECRET,
+    _userProperty: 'payload'
+});
 /*
  * The api calls creates a user
  * For android application as role 'client'

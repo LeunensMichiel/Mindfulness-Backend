@@ -3,6 +3,7 @@ let mongoose = require("mongoose");
 let SessionSchema = new mongoose.Schema({
     title: String,
     position: Number,
+    path_image: String,
     exercises: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'exercise'

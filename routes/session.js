@@ -1,5 +1,7 @@
 let express = require('express');
 let router = express.Router();
+const multer = require('multer');
+const fs = require('fs');
 
 let mongoose = require("mongoose");
 
@@ -9,19 +11,43 @@ let Session = mongoose.model('session');
 
 let jwt = require('express-jwt');
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/session_image');
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().toISOString() + file.originalname);
+    }
+});
+
+// through this variable we filter what files we accept and what not
+// const fileFilter = (req, file, cb) => {
+//
+// }
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 10
+    }
+});
+
 let auth = jwt({
     secret: process.env.MINDFULNESS_BACKEND_SECRET,
     _userProperty: 'payload'
 });
 
 
-router.post('/session', auth, function (req, res, next) {
-    let session = new Session(req.body);
-
+router.post('/session', auth, upload.single("session_image"), function (req, res, next) {
+    let session = new Session(JSON.parse(req.body.session));
+    session.path_image = req.file.path;
     session.save(function (err, session) {
         if (err) {
+            console.log(err);
             return next(err);
         }
+
+
         let sessionmapQuerry = Sessionmap.updateOne({_id: req.body.sessionmap_id}, {'$push': {sessions: session}});
 
         sessionmapQuerry.exec(function (err, sessionmap) {
