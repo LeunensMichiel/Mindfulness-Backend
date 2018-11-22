@@ -3,6 +3,13 @@ let router = express.Router();
 const mongoose = require("mongoose");
 const multer = require('multer');
 const fs = require('fs');
+let jwt = require('express-jwt');
+
+
+let auth = jwt({
+    secret: process.env.MINDFULNESS_BACKEND_SECRET,
+    _userProperty: 'payload'
+});
 //
 //
 // const Paragraphs = mongoose.model("paragraph");
