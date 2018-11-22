@@ -187,13 +187,13 @@ router.post('/user', auth, function (req, res, next) {
 });
 
 router.put('/user/:user', function (req, res, next) {
-    user.group = req.body.group_id;
+    req.user.group = req.body.group_id;
 
-        user.save(function (err) {
+        req.user.save(function (err, user) {
             if (err) {
                 return res.send(err);
             }
-            res.json(req.body);
+            res.json(user);
         })
 });
 
