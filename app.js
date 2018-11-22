@@ -18,21 +18,20 @@ require('./models/sessionmap');
 require('./models/group');
 require('./models/exercise');
 require('./models/session');
-require('./models/paragraph');
 require('./models/post');
 
 require('./config/passport');
 
 // var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var fileRouter = require('./routes/files');
-var exerciseRouter = require('./routes/exercise');
-var sessionRouter = require('./routes/session');
-var sessionmapRouter = require('./routes/sessionmap');
-var pageRouter = require('./routes/page');
-var postRouter = require('./routes/post');
-var paragraphRouter = require('./routes/paragraph');
-var groupRouter = require('./routes/group');
+let userRouter = require('./routes/user');
+let fileRouter = require('./routes/files');
+let exerciseRouter = require('./routes/exercise');
+let sessionRouter = require('./routes/session');
+let sessionmapRouter = require('./routes/sessionmap');
+let pageRouter = require('./routes/page');
+let postRouter = require('./routes/post');
+// let paragraphRouter = require('./routes/paragraph');
+let groupRouter = require('./routes/group');
 
 var app = express();
 
@@ -49,10 +48,10 @@ app.use('/API/session', sessionRouter);
 app.use('/API/sessionmap', sessionmapRouter);
 app.use('/API/page', pageRouter);
 app.use('/API/post', postRouter);
-app.use('/API/paragraph', paragraphRouter);
+// app.use('/API/paragraph', paragraphRouter);
 app.use('/API/group', groupRouter);
-app.use('/users', usersRouter);
-app.use('/file', fileRouter);
+app.use('/API/users', userRouter);
+app.use('/API/file', fileRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

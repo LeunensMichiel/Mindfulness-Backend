@@ -2,14 +2,14 @@ let mongoose = require('mongoose');
 
 let PageSchema = new mongoose.Schema({
     title: String,
-    pathAudio: String,
+    path_audio: String,
     description: String,
     position: Number,
     type: String,
     paragraphs: [{
-        id: mongoose.Schema.Types.ObjectId,
+        // id: mongoose.Schema.Types.ObjectId,
         position: Number,
-        formType:String,
+        form_type:String,
         filename:String,
         pathname:String,
         description:String
@@ -17,7 +17,7 @@ let PageSchema = new mongoose.Schema({
 });
 
 PageSchema.pre('remove', function (next) {
-    this.model('exercise').update({},
+    this.model('exercise').updateOne({},
         { $pull: { pages: this._id } },
         { safe: true, multi: true },
         next

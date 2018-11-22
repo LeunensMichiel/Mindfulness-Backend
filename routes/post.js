@@ -8,7 +8,6 @@ let Page = mongoose.model('page');
 let Session = mongoose.model('session');
 let Exercise = mongoose.model('exercise');
 let Post = mongoose.model('post');
-let Paragraph = mongoose.model('paragraph');
 let User = mongoose.model('user');
 
 let jwt = require('express-jwt');
@@ -20,9 +19,11 @@ let auth = jwt({
 
 
 //versie2
-router.post('/getpost', function (req, res, next) {
-    let query = Post.findOne({"sessionmap_id":req.body.sessionmap_id,"session_id":req.body.session_id,
-        "exercise_id":req.body.exercise_id,"page_id":req.body.page_id,"user_id": req.body.user_id});
+router.post('/getpost',auth, function (req, res, next) {
+    let query = Post.findOne({
+        "sessionmap_id": req.body.sessionmap_id, "session_id": req.body.session_id,
+        "exercise_id": req.body.exercise_id, "page_id": req.body.page_id, "user_id": req.body.user_id
+    });
 
     query.exec(function (err, post) {
         if (err) {
@@ -63,7 +64,7 @@ router.post('/getpost', function (req, res, next) {
                 });
             });
         }
-        else{
+        else {
             res.json(post);
         }
     });
@@ -72,44 +73,35 @@ router.post('/getpost', function (req, res, next) {
 
 
 // werkt en wordt gebruikt
-router.post('/post', function (req, res, next) {
-    let post = new Post({
-        sessionmap_id: req.body.sessionmap_id,
-        session_id: req.body.session_id,
-        exercise_id: req.body.exercise_id,
-        page_id: req.body.page_id,
-        inhoud: req.body.inhoud,
-        afbeelding: req.body.afbeelding,
-        user_id: req.body.user_id
-    });
-
+router.post('/post', auth, function (req, res, next) {
+    let post = new Post(req.body);
     post.save(function (err, post) {
         if (err) {
             return next(err);
         }
-
-        let postQuery = User.findById(post.user_id);
-        postQuery.exec(function (err, user) {
+        User.findById(req.body.user_id, function (err, user) {
             if (err) {
-
+                post.remove();
                 return next(err);
             }
-            console.log(user);
-
-            user.posts.push(post);
-
+            user.posts.push(post)
             user.save(function (err, user) {
-                if (err) {
-                    return next(err);
-                }
+                if (err) { return next(err); }
                 res.json(post);
-            });
-        });
+            })
+        })
     });
 });
 
+router.put('/post', function(req,res,next){
+    Post.findByIdAndUpdate(req.body._id , req.body, function(err, post){
+        if (err) { return next(err) }
+        res.json(post)
+    })
+});
+
 // werkt en wordt gebruikt
-router.put('/post/:post', function(req,res,next){
+router.put('/post/:post',auth, function (req, res, next) {
     let post = req.post;
     post.sessionmap_id = req.body.sessionmap_id;
     post.session_id = req.body.session_id;
@@ -119,8 +111,8 @@ router.put('/post/:post', function(req,res,next){
     post.afbeelding = req.body.afbeelding;
     post.user_id = req.body.user_id;
 
-    post.save(function (err){
-        if(err){
+    post.save(function (err) {
+        if (err) {
             return res.send(err);
         }
         res.json(req.post);
@@ -128,15 +120,15 @@ router.put('/post/:post', function(req,res,next){
 });
 
 // werkt en wordt gebruikt
-router.param('post',function(req,res,next,id){
+router.param('post', function (req, res, next, id) {
     let query = Post.findById(id);
     console.log(id);
-    query.exec(function(err,post){
-        if(err){
+    query.exec(function (err, post) {
+        if (err) {
             return next(err);
         }
-        if(!post){
-            return next(new Error('not found '+id));
+        if (!post) {
+            return next(new Error('not found ' + id));
         }
         req.post = post;
         return next();

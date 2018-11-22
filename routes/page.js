@@ -1,17 +1,36 @@
 let express = require('express');
 let router = express.Router();
+const multer = require('multer');
+const fs = require('fs');
 
 let mongoose = require("mongoose");
 
-let Sessionmap = mongoose.model('sessionmap');
 let Page = mongoose.model('page');
-let Session = mongoose.model('session');
 let Exercise = mongoose.model('exercise');
-let Post = mongoose.model('post');
-let Paragraph = mongoose.model('paragraph');
-let User = mongoose.model('user');
+
 
 let jwt = require('express-jwt');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/page_audio');
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().toISOString() + file.originalname);
+    }
+});
+
+// through this variable we filter what files we accept and what not
+// const fileFilter = (req, file, cb) => {
+//
+// }
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 10
+    }
+});
 
 let auth = jwt({
     secret: process.env.MINDFULNESS_BACKEND_SECRET,
@@ -19,10 +38,11 @@ let auth = jwt({
 });
 
 router.get('/pages/:exercise_id', function (req, res, next) {
+    console.log(req.pagess);
     res.json(req.pagess);
 });
 
-router.post('/page', function (req, res, next) {
+router.post('/page', auth, function (req, res, next) {
     let page = new Page(req.body);
 
     page.save(function (err, page) {
@@ -40,20 +60,38 @@ router.post('/page', function (req, res, next) {
     });
 });
 
-router.put('/page/:page', function(req, res ,next){
+router.put('/page/:page', auth,function(req, res ,next){
+
     req.page.title = req.body.title;
-    req.page.pathAudio = req.body.pathAudio;
+    req.page.path_audio = req.body.path_audio;
     req.page.description = req.body.description;
     req.page.position = req.body.position;
+
     req.page.paragraphs = req.body.paragraphs;
 
     req.page.save(function(err, page){
-        if (err) {return next(err); }
+        if (err) {
+            console.log(err);
+            return next(err); }
+
         res.json(page);
     })
 });
 
-router.delete('/page/:page', function (req, res, next) {
+router.put('/pagefile/:page', auth, upload.single("page_file"), function(req, res, next) {
+
+    req.page.path_audio = req.file.path;
+
+    req.page.save(function(err, page){
+        if (err) {
+            console.log(err);
+            return next(err); }
+
+        res.json(page);
+    });
+});
+
+router.delete('/page/:page', auth, function (req, res, next) {
     req.page.remove(function (err) {
         if (err) return next(err);
 

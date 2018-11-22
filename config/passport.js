@@ -5,7 +5,7 @@ var User = mongoose.model('user');
 
 
 passport.use(new LocalStrategy({
-        /*
+        /**
          * Because we use email instead of username as identifier
          * We need to tell passport specifically to look for the email field en not for the username field
          */
@@ -13,7 +13,9 @@ passport.use(new LocalStrategy({
         passwordField: 'password'
     },
     function (email, password, done) {
-        User.findOne({email: email}, function (err, user) {
+        let query = User.findOne({email: email})
+            .populate('group')
+        query.exec(function (err, user) {
             if (err) {
                 return done(err);
             }
