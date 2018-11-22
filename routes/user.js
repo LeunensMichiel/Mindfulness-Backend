@@ -23,7 +23,7 @@ let auth = jwt({
 router.post('/register', function (req, res, next) {
 
     if (!req.body.email || !req.body.password || !req.body.groups_code) {
-        return res.status(400).json({message: 'email of wachtwoord of groups_code was niet ingevuld'});
+        return res.status(400).json({ message: 'email of wachtwoord of groups_code was niet ingevuld' });
     }
 
     let query = Group.findById(req.body.groups_code);
@@ -51,7 +51,7 @@ router.post('/register', function (req, res, next) {
 
 router.post('/login', function (req, res, next) {
     if (!req.body.email || !req.body.password) {
-        return res.status(400).json({message: 'email of wachtwoord was niet ingevuld'});
+        return res.status(400).json({ message: 'email of wachtwoord was niet ingevuld' });
     }
 
     passport.authenticate('local', function (err, user, info) {
@@ -142,7 +142,7 @@ router.post('/checkemail', function (req, res, next) {
         });
 });
 
-router.get('/user/:user', auth, function (req, res, next) {
+router.get('/user/:user',auth, function (req, res, next) {
     res.json(req.user)
 
 })
@@ -159,7 +159,7 @@ router.param('user', function (req, res, next, id) {
         if (!user) {
             return next(new Error('not found' + id));
         }
-        console.log(user);
+
         req.user = user;
         return next();
     })
@@ -182,7 +182,7 @@ router.post('/user', auth, function (req, res, next) {
             if (err) {
                 return res.send(err);
             }
-            res.json({result: "geslaagd"});
+            res.json({ result: "geslaagd" });
         });
     });
 });
@@ -216,7 +216,15 @@ router.put('/user/feedback', auth, function (req, res, next) {
     //     }
     //     res.json({result: "geslaagd"});
     // });
-});
+});router.put('/user/:user', function (req, res, next) {
+    req.user.group = req.body.group_id;
 
+    req.user.save(function (err, user) {
+        if (err) {
+            return res.send(err);
+        }
+        res.json(user);
+    })
+});
 
 module.exports = router;

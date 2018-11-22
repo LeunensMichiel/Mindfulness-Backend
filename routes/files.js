@@ -3,6 +3,13 @@ let router = express.Router();
 const mongoose = require("mongoose");
 const multer = require('multer');
 const fs = require('fs');
+let jwt = require('express-jwt');
+
+
+let auth = jwt({
+    secret: process.env.MINDFULNESS_BACKEND_SECRET,
+    _userProperty: 'payload'
+});
 //
 //
 // const Paragraphs = mongoose.model("paragraph");
@@ -54,12 +61,16 @@ const fs = require('fs');
 //         return next();
 //     });
 // });
-//
-router.post('/file', function (req, res) {
+
+router.get('/file/:path',auth, function (req, res) {
     // We used this as reference: https://medium.freecodecamp.org/node-js-streams-everything-you-need-to-know-c9141306be93
-    const src = fs.createReadStream(req.body.path);
+    const src = fs.createReadStream(req.path);
     src.pipe(res);
 
+});
+
+router.param('path', function(req, res, next, id){
+    req.paht = id;
 });
 //
 module.exports = router;
