@@ -1,8 +1,8 @@
-// let express = require('express');
-// let router = express.Router();
-// const mongoose = require("mongoose");
-// const multer = require('multer');
-// const fs = require('fs');
+let express = require('express');
+let router = express.Router();
+const mongoose = require("mongoose");
+const multer = require('multer');
+const fs = require('fs');
 //
 //
 // const Paragraphs = mongoose.model("paragraph");
@@ -55,11 +55,11 @@
 //     });
 // });
 //
-// router.post('/API/file', function (req, res) {
-//     // We used this as reference: https://medium.freecodecamp.org/node-js-streams-everything-you-need-to-know-c9141306be93
-//     const src = fs.createReadStream(req.body.path);
-//     src.pipe(res);
+router.post('/file', function (req, res) {
+    // We used this as reference: https://medium.freecodecamp.org/node-js-streams-everything-you-need-to-know-c9141306be93
+    const src = fs.createReadStream(req.body.path);
+    src.pipe(res);
+
+});
 //
-// });
-//
-// module.exports = router;
+module.exports = router;

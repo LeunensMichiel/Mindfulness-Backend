@@ -15,11 +15,11 @@ let auth = jwt({
     _userProperty: 'payload'
 });
 
-router.get('/exercises/:session', function (req, res, next) {
+router.get('/exercises/:session', auth, function (req, res, next) {
     res.json(req.exercises);
 });
 
-router.get('/pages_of_exercise/:exercise', function(req, res, next) {
+router.get('/pages_of_exercise/:exercise', auth, function(req, res, next) {
     res.json(req.exercise.pages);
 });
 
@@ -37,7 +37,7 @@ router.param('session', function (req, res, next, id) {
     })
 });
 
-router.get('/exercise/:exercise', function (req, res, next) {
+router.get('/exercise/:exercise', auth, function (req, res, next) {
     res.json(req.exercise);
 });
 
@@ -60,7 +60,7 @@ router.post('/exercise', function (req, res, next) {
     });
 });
 
-router.delete('/exercise/:exercise', function (req, res) {
+router.delete('/exercise/:exercise', auth, function (req, res) {
     Exercise.remove({ _id: { $in: req.exercise.pages } }, function (err) {
         if (err) return next(err);
         req.exercise.remove(function (err) {
@@ -72,7 +72,7 @@ router.delete('/exercise/:exercise', function (req, res) {
     });
 });
 
-router.put('/exercise/:exercise', function (req, res, next) {
+router.put('/exercise/:exercise', auth, function (req, res, next) {
     let exercise = req.exercise;
     exercise.title = req.body.title;
     exercise.position = req.body.position;

@@ -2,7 +2,7 @@ let mongoose = require('mongoose');
 
 let PageSchema = new mongoose.Schema({
     title: String,
-    pathAudio: String,
+    path_audio: String,
     description: String,
     position: Number,
     type: String,
