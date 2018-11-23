@@ -14,7 +14,7 @@ let auth = jwt({
     _userProperty: 'payload'
 });
 
-router.get('/groups', function (req, res, next) {
+router.get('/groups', auth, function (req, res, next) {
     let query = Group.find().populate({
         path: 'sessionmap_id',
         model: 'sessionmap',
@@ -24,11 +24,13 @@ router.get('/groups', function (req, res, next) {
         if (err) {
             return next(err);
         }
+
+        console.log(groups);
         res.json(groups);
     });
 });
 
-router.post('/group', function (req, res, next) {
+router.post('/group', auth,  function (req, res, next) {
     let group = new Group({
         name: req.body.name,
         sessionmap_id: req.body.sessionmap._id
@@ -41,7 +43,7 @@ router.post('/group', function (req, res, next) {
     });
 });
 
-router.put('/group/:group',function(req,res,next){
+router.put('/group/:group', auth, function(req,res,next){
     let group = req.group;
     group.name = req.body.name;
     group.save(function (err){
@@ -52,7 +54,7 @@ router.put('/group/:group',function(req,res,next){
     })
 });
 
-router.param('group',function(req,res,next,id){
+router.param('group', function(req,res,next,id){
     let query = Group.findById(id);
     query.exec(function(err,group){
         if(err){
@@ -66,7 +68,7 @@ router.param('group',function(req,res,next,id){
     })
 });
 
-router.delete('/group/:group',function(req,res){
+router.delete('/group/:group',auth, function(req,res){
     let group = req.group;
     let idvangroep = req.group.id;
     
@@ -80,13 +82,23 @@ router.delete('/group/:group',function(req,res){
     res.json(req.group);
 });
 
-router.get('/group/sessionmaps', function (req, res, next) {
+router.get('/group/sessionmaps', auth, function (req, res, next) {
     let query = Sessionmap.find({},{_id:true,titleCourse:true});
     query.exec(function (err, sessionmaps) {
         if (err) {
             return next(err);
         }
         res.json(sessionmaps);
+    });
+});
+
+router.get('/group/getUsers/:group', auth, function (req, res, next) {
+    let query = User.find({group:req.group},{_id:false,email:true});
+    query.exec(function (err, users) {
+        if (err) {
+            return next(err);
+        }
+        res.json(users);
     });
 });
 
