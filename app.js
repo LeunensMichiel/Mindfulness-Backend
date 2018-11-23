@@ -32,6 +32,7 @@ let pageRouter = require('./routes/page');
 let postRouter = require('./routes/post');
 // let paragraphRouter = require('./routes/paragraph');
 let groupRouter = require('./routes/group');
+let feedbackRouter = require('./routes/feedback');
 
 var app = express();
 
@@ -52,6 +53,7 @@ app.use('/API/post', postRouter);
 app.use('/API/group', groupRouter);
 app.use('/API/users', userRouter);
 app.use('/API/file', fileRouter);
+app.use('/API/feedback', feedbackRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
