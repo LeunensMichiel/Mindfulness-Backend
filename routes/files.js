@@ -64,8 +64,14 @@ let auth = jwt({
 
 router.post('/file',auth, function (req, res) {
     // We used this as reference: https://medium.freecodecamp.org/node-js-streams-everything-you-need-to-know-c9141306be93
-    const src = fs.createReadStream(req.body.path);
-    src.pipe(res);
+
+
+    try {
+        const src = fs.createReadStream(req.body.path);
+        src.pipe(res);    }
+    catch(err) {
+        res.json({err: err});
+    }
 
 });
 

@@ -7,11 +7,11 @@ let PageSchema = new mongoose.Schema({
     position: Number,
     type: String,
     paragraphs: [{
-        // id: mongoose.Schema.Types.ObjectId,
+        _id: mongoose.Schema.Types.ObjectId,
         position: Number,
         form_type:String,
         filename:String,
-        pathname:String,
+        path_name:String,
         description:String
     }]
 });

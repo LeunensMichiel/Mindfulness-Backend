@@ -32,6 +32,27 @@ const upload = multer({
     }
 });
 
+const storageParagraph = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/paragraphs_image');
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().toISOString() + file.originalname);
+    }
+});
+
+// through this variable we filter what files we accept and what not
+// const fileFilter = (req, file, cb) => {
+//
+// }
+
+const uploadParagraph = multer({
+    storage: storageParagraph,
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    }
+});
+
 let auth = jwt({
     secret: process.env.MINDFULNESS_BACKEND_SECRET,
     _userProperty: 'payload'
@@ -83,6 +104,21 @@ router.put('/pagefile/:page', auth, upload.single("page_file"), function(req, re
     req.page.path_audio = req.file.path;
 
     req.page.save(function(err, page){
+        if (err) {
+            console.log(err);
+            return next(err); }
+
+        res.json(page);
+    });
+});
+
+router.put('/pagefileparagraph/:page', auth, uploadParagraph.single("page_file"), function(req, res, next) {
+
+    req.page.path_audio = req.file.path;
+
+    let pageQuery = req.page.updateOne({"paragraphs._id": req.body.par_id}, {"$set": {"paragraphs.$.path_name": req.file.path}});
+
+    pageQuery.exec(function(err, page){
         if (err) {
             console.log(err);
             return next(err); }
