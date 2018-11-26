@@ -37,7 +37,9 @@ let auth = jwt({
     _userProperty: 'payload'
 });
 
-
+// let adminAuth = function  (req, res, next) {
+//     if req.
+// }
 router.post('/session', auth, upload.single("session_image"), function (req, res, next) {
     let session = new Session(JSON.parse(req.body.session));
     session.path_image = req.file.path;

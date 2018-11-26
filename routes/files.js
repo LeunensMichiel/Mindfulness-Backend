@@ -62,7 +62,7 @@ let auth = jwt({
 //     });
 // });
 
-router.post('/file',auth, function (req, res) {
+router.post('/file', function (req, res) {
     // We used this as reference: https://medium.freecodecamp.org/node-js-streams-everything-you-need-to-know-c9141306be93
 
 
@@ -74,6 +74,27 @@ router.post('/file',auth, function (req, res) {
     }
 
 });
+
+//
+// router.get('/file/:pad', function (req, res) {
+//     // We used this as reference: https://medium.freecodecamp.org/node-js-streams-everything-you-need-to-know-c9141306be93
+//
+//
+//     try {
+//         const src = fs.createReadStream("uploads/session_image/" + req.filename);
+//         src.pipe(res);    }
+//     catch(err) {
+//         res.json({err: err});
+//     }
+//
+// });
+//
+// router.param('pad', function(req, res, next, filename) {
+//
+//     req.filename = filename;
+//
+//     return next();
+// });
 
 
 //

@@ -7,6 +7,8 @@ let Group = mongoose.model('group');
 let User = mongoose.model('user');
 let Sessionmap = mongoose.model('sessionmap');
 
+const emailServer = require("../config/mail_config");
+
 let jwt = require('express-jwt');
 
 let auth = jwt({
@@ -100,6 +102,33 @@ router.get('/group/getUsers/:group', auth, function (req, res, next) {
         }
         res.json(users);
     });
+});
+
+// const email     = require("emailjs");
+
+
+router.post('/group/sendmail', auth, function(req, res, next){
+
+    const message	= {
+        from:	    "jari.duyvejonck@outlook.com",
+        to:		    req.body.receiver,
+        subject:	req.body.subject,
+        attachment:
+            [
+                {data:`<html>i <i>hope</i> this works!  ${req.body.text}</html>`, alternative:true}
+            ]
+    };
+
+    // send the message and get a callback with an error or details of the message that was sent
+    emailServer.send(message, function(err, message) {
+
+        if (err){
+            return next(err);
+        }
+
+        res.send("Mail successvol verstuurd");
+    });
+
 });
 
 module.exports = router;
