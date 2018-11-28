@@ -100,6 +100,14 @@ router.put('/post', function(req,res,next){
     })
 });
 
+router.get('/checkpost/:post_page_id', function(req, res, next){
+    res.json(req.post)
+});
+
+router.get('/post/:user', function(req, res, next){
+    res.json(req.user.posts)
+});
+
 // werkt en wordt gebruikt
 router.put('/post/:post',auth, function (req, res, next) {
     let post = req.post;
@@ -134,5 +142,25 @@ router.param('post', function (req, res, next, id) {
         return next();
     })
 });
+
+router.param('post_page_id', function(req, res, next, id){
+    let query = Post.findOne({'page_id': id});
+    query.exec(function(err, post){
+        if (err) { return next(err); }
+        if (!post) { req.post = { '_id': 'none' }}
+        if (post) { req.post = post }
+        return next();
+    });
+});
+
+router.param('user', function(req, res, next, id) {
+    let query = User.findById(id)
+        .populate('posts')
+    query.exec(function(err, user){
+        if (err) { return next(err) }
+        req.user = user
+        return next()
+    });
+})
 
 module.exports = router;

@@ -143,7 +143,14 @@ router.post('/checkemail', function (req, res, next) {
 });
 
 router.get('/user/:user',auth, function (req, res, next) {
-    res.json(req.user)
+    console.log(req.paramUser);
+    res.json(req.paramUser)
+})
+
+router.get('/group/:user',auth, function (req, res, next) {
+    console.log(req.paramUser)
+    console.log(req.paramUser.group);
+    res.json(req.paramUser.group)
 
 })
 
@@ -160,7 +167,7 @@ router.param('user', function (req, res, next, id) {
             return next(new Error('not found' + id));
         }
 
-        req.user = user;
+        req.paramUser = user;
         return next();
     })
 });
@@ -217,9 +224,9 @@ router.put('/user/feedback', auth, function (req, res, next) {
     //     res.json({result: "geslaagd"});
     // });
 });router.put('/user/:user', function (req, res, next) {
-    req.user.group = req.body.group_id;
+    req.paramUser.group = req.body.group_id;
 
-    req.user.save(function (err, user) {
+    req.paramUser.save(function (err, user) {
         if (err) {
             return res.send(err);
         }
