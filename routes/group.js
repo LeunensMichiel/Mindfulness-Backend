@@ -35,7 +35,8 @@ router.get('/groups', auth, function (req, res, next) {
 router.post('/group', auth,  function (req, res, next) {
     let group = new Group({
         name: req.body.name,
-        sessionmap_id: req.body.sessionmap._id
+        sessionmap_id: req.body.sessionmap._id,
+        actief:false
     });
     group.save(function (err, group) {
         if (err) {
@@ -48,6 +49,7 @@ router.post('/group', auth,  function (req, res, next) {
 router.put('/group/:group', auth, function(req,res,next){
     let group = req.group;
     group.name = req.body.name;
+    group.actief = req.body.actief;
     group.save(function (err){
         if(err){
             return res.send(err);
