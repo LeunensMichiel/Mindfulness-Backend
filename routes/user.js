@@ -97,13 +97,12 @@ router.post('/login/admin', function (req, res, next) {
             return res.status(401).json(info);
         }
         return res.json({
-            token: user.generateJWT(),
-            _id: user._id
+            token: user.generateJWT()
         });
     })(req, res, next);
 });
 
-/*
+/**
  * The api calls creates a user
  * For angular application as 'admins'
  * We will only need this api call to put user manually into the database

@@ -62,16 +62,20 @@ let auth = jwt({
 //     });
 // });
 
-router.post('/file', function (req, res) {
+router.post('/file', function (req, res, next) {
     // We used this as reference: https://medium.freecodecamp.org/node-js-streams-everything-you-need-to-know-c9141306be93
 
 
-    try {
-        const src = fs.createReadStream(req.body.path);
-        src.pipe(res);    }
-    catch(err) {
-        res.json({err: err});
-    }
+    let fileReader = fs.createReadStream(req.body.path);
+
+    fileReader.on('error', function (err) {
+        console.log('fileread failed');
+        res.statusCode = 400;
+        res.end(`error: ${err.message}`);
+
+    });
+
+    fileReader.pipe(res);
 
 });
 
