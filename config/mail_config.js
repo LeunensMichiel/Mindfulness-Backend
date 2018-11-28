@@ -8,9 +8,9 @@ const email     = require("emailjs");
 
 // Server config
 const server    = email.server.connect({
-    user:       "jari.duyvejonck@outlook.com",
+    user:       "mindfulness.beheerder@gmail.com",
     password:   process.env.EMAIL_PASSWORD,
-    host:       "smtp-mail.outlook.com",
+    host:       "smtp.gmail.com",
     tls:        {ciphers: "SSLv3"}
 });
 

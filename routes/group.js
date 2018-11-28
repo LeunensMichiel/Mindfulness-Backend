@@ -110,12 +110,12 @@ router.get('/group/getUsers/:group', auth, function (req, res, next) {
 router.post('/group/sendmail', auth, function(req, res, next){
 
     const message	= {
-        from:	    "jari.duyvejonck@outlook.com",
+        from:	    "mindfulness.beheerder@gmail.com",
         to:		    req.body.receiver,
         subject:	req.body.subject,
         attachment:
             [
-                {data:`<html>i <i>hope</i> this works!  ${req.body.text}</html>`, alternative:true}
+                {data:`<html><b>${req.body.subject} </b><i></i> ${req.body.text}</html>`, alternative:true}
             ]
     };
 
