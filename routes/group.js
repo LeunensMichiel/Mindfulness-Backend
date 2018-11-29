@@ -97,14 +97,20 @@ router.get('/group/sessionmaps', auth, function (req, res, next) {
 });
 
 router.get('/group/getUsers/:group', auth, function (req, res, next) {
-    let query = User.find({group:req.group},{_id:false,email:true});
-    query.exec(function (err, users) {
-        if (err) {
-            return next(err);
-        }
-        res.json(users);
-    });
-});
+    // let query = User.find({group:req.group},{_id:false,email:true,firstname:true,lastname:true});
+    let query = User.find({group:req.group},{_id:false,email:true,firstname:true,lastname:true})
+    .populate({
+     path: 'current_session_id',
+     model: 'session',
+     select: 'title'
+ });
+     query.exec(function (err, users) {
+         if (err) {
+             return next(err);
+         }
+         res.json(users);
+     });
+ });
 
 // const email     = require("emailjs");
 
