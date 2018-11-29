@@ -140,7 +140,7 @@ router.post('/group/sendmail', auth, function(req, res, next){
 });
 
 router.get('/group/getPossibleUsers/:group', auth, function (req, res, next) {
-    let query = User.find({group:{$nin:[req.group._id]}},{_id:true,firstname:true,lastname:true});
+    let query = User.find({$and:[{group:{$nin:[req.group._id]}},{'roles.client':{$in:[true]}}]},{_id:true,firstname:true,lastname:true});
 
      query.exec(function (err, users) {
          if (err) {
