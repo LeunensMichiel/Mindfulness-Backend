@@ -139,4 +139,27 @@ router.post('/group/sendmail', auth, function(req, res, next){
 
 });
 
+router.get('/group/getPossibleUsers/:group', auth, function (req, res, next) {
+    let query = User.find({group:{$nin:[req.group._id]}},{_id:true,firstname:true,lastname:true});
+
+     query.exec(function (err, users) {
+         if (err) {
+             return next(err);
+         }
+         res.json(users);
+     });
+ });
+
+ //  nog een api call om een user te verwijderen van een groep: een put, gewoon de group pullen van group van user
+ // group van user moet een array worden
+ /*
+ router.put('/group/deleteUserFromGroup/:group',auth, function(req,res){
+    let query = User.findOne({_id:req.user._id});
+    query.updateMany({group:idvangroep},{'$set': {group:null}});
+    res.json(req.group);
+});
+*/
+
+// nog een api call om een user toe te voegen aan een groep
+
 module.exports = router;
