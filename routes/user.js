@@ -67,13 +67,18 @@ router.post('/login', function (req, res, next) {
         }
         if (user) {
             return res.json({
+                //Aangepast door Michiel op 30/11 om bugs proberen op te lossen van userInfo
                 token: user.generateJWT(),
                 _id: user._id,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                email: user.email,
                 unlocked_sessions: user.unlocked_sessions,
                 current_session_id: user.current_session_id,
                 current_exercise_id: user.current_exercise_id,
                 post_ids: user.posts,
-                group: user.group
+                group: user.group,
+                feedbackSubscribed: user.feedbackSubscribed
             });
         } else {
             return res.status(401).json(info);
