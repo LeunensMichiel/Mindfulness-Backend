@@ -6,7 +6,7 @@ let Group = mongoose.model('group');
 let passport = require("passport");
 let jwt = require('express-jwt');
 
-/*
+/**
  * TODO We should use Aoth2.0 for third party login
  * http://www.passportjs.org/docs/oauth2-api/
  */
@@ -15,7 +15,7 @@ let auth = jwt({
     secret: process.env.MINDFULNESS_BACKEND_SECRET,
     _userProperty: 'payload'
 });
-/*
+/**
  * The api calls creates a user
  * For android application as role 'client'
  * We will only need this api call to put user manually into the database
@@ -114,14 +114,11 @@ router.post('/login/admin', function (req, res, next) {
  */
 router.post('/register/admin', function (req, res, next) {
 
-    if (!req.body.email || !req.body.password) {
-        return res.status(400).json({message: 'email of wachtwoord was niet ingevuld'});
+    if (!req.body.email || !req.body.password || !req.body.firstname || !req.body.lastname) {
+        return res.status(400).json({message: 'email of wachtwoord of voornaam of achternaam was niet ingevuld'});
     }
 
-    let user = new User();
-    // user.firstname = req.body.firstname;
-    // user.lastname = req.body.lastname;
-    user.email = req.body.email;
+    let user = new User(req.body);
     user.roles.admin = true;
     user.setPassword(req.body.password);
     user.save(function (err) {
