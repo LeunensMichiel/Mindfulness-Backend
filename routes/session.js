@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
         cb(null, './uploads/session_image');
     },
     filename: function(req, file, cb) {
-        cb(null, new Date().toISOString() + file.originalname);
+        cb(null, new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname);
     }
 });
 
@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 10
+        fileSize: 1024 * 1024 * 5
     }
 });
 
@@ -42,7 +42,7 @@ let auth = jwt({
 // }
 router.post('/session', auth, upload.single("session_image"), function (req, res, next) {
     let session = new Session(JSON.parse(req.body.session));
-    session.path_image = req.file.path;
+    session.image_name = req.file.filename;
     session.save(function (err, session) {
         if (err) {
             console.log(err);
@@ -53,8 +53,16 @@ router.post('/session', auth, upload.single("session_image"), function (req, res
         let sessionmapQuerry = Sessionmap.updateOne({_id: req.body.sessionmap_id}, {'$push': {sessions: session}});
 
         sessionmapQuerry.exec(function (err, sessionmap) {
+            let sessionmapError = err;
             if (err) {
-                return next(err);
+                session.remove(function(err, session) {
+                    if (err) {
+                        return next(err);
+                    }
+
+                    return next(err);
+                });
+
             }
 
             res.json(session);
@@ -152,5 +160,9 @@ router.param('session_with_childs', function (req, res, next, id) {
         return next();
     })
 });
+
+
+
+
 
 module.exports = router;

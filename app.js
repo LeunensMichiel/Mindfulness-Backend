@@ -11,6 +11,9 @@ let passport = require('passport');
 var fs = require('fs');
 
 mongoose.connect('mongodb://projecten3studserver03.westeurope.cloudapp.azure.com/mindfulnessdb', { useNewUrlParser: true });
+
+mongoose.set('useFindAndModify', false);
+
 require('./models/user');
 require('./models/page');
 require('./models/feedback');
