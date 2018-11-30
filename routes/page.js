@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
         cb(null, './uploads/page_audio');
     },
     filename: function(req, file, cb) {
-        cb(null, new Date().toISOString() + file.originalname);
+        cb(null, new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname);
     }
 });
 
@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 10
+        fileSize: 1024 * 1024 * 5
     }
 });
 
@@ -37,7 +37,7 @@ const storageParagraph = multer.diskStorage({
         cb(null, './uploads/paragraphs_image');
     },
     filename: function(req, file, cb) {
-        cb(null, new Date().toISOString() + file.originalname);
+        cb(null, new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname);
     }
 });
 
@@ -99,29 +99,37 @@ router.put('/page/:page', auth,function(req, res ,next){
     })
 });
 
-router.put('/pagefile/:page', auth, upload.single("page_file"), function(req, res, next) {
+router.put('/pagefile/:page_with_audio', auth, upload.single("page_file"), function(req, res, next) {
 
-    req.page.path_audio = req.file.path;
+    console.log(req.params);
+    let pageQuery = Page.findOneAndUpdate(
+        {_id: req.params.page_with_audio},
+        {$set: {"audio_name": req.file.filename}},
+        {new: true}
+    );
 
-    req.page.save(function(err, page){
+    pageQuery.exec(function(err, page){
         if (err) {
-            console.log(err);
-            return next(err); }
+            return next(err);
+        }
 
         res.json(page);
     });
 });
 
-router.put('/pagefileparagraph/:page', auth, uploadParagraph.single("page_file"), function(req, res, next) {
+router.put('/pagefileparagraph/:page_with_paragraph', auth, uploadParagraph.single("page_file"), function(req, res, next) {
 
-    req.page.path_audio = req.file.path;
+    let pageQuery = Page.findOneAndUpdate(
+        {_id: req.params.page_with_paragraph, "paragraphs.position": req.body.par_pos},
+        {$set: {"paragraphs.$.image_name": req.file.filename}},
+        {new: true}
+        );
 
-    let pageQuery = req.page.updateOne({"paragraphs._id": req.body.par_id}, {"$set": {"paragraphs.$.path_name": req.file.path}});
 
     pageQuery.exec(function(err, page){
         if (err) {
-            console.log(err);
-            return next(err); }
+            return next(err);
+        }
 
         res.json(page);
     });
