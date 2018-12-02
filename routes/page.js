@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
         cb(null, './uploads/page_audio');
     },
     filename: function(req, file, cb) {
-        cb(null, new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname);
+        cb(null, (new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname).replace(" ", ""));
     }
 });
 
