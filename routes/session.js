@@ -42,7 +42,7 @@ let auth = jwt({
 // }
 router.post('/session', auth, upload.single("session_image"), function (req, res, next) {
     let session = new Session(JSON.parse(req.body.session));
-    session.image_name = req.file.filename;
+    session.image_filename = req.file.filename;
     session.save(function (err, session) {
         if (err) {
             console.log(err);

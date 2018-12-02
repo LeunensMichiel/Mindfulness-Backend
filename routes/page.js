@@ -104,7 +104,7 @@ router.put('/pagefile/:page_with_audio', auth, upload.single("page_file"), funct
     console.log(req.params);
     let pageQuery = Page.findOneAndUpdate(
         {_id: req.params.page_with_audio},
-        {$set: {"audio_name": req.file.filename}},
+        {$set: {"audio_filename": req.file.filename}},
         {new: true}
     );
 
@@ -121,7 +121,7 @@ router.put('/pagefileparagraph/:page_with_paragraph', auth, uploadParagraph.sing
 
     let pageQuery = Page.findOneAndUpdate(
         {_id: req.params.page_with_paragraph, "paragraphs.position": req.body.par_pos},
-        {$set: {"paragraphs.$.image_name": req.file.filename}},
+        {$set: {"paragraphs.$.image_filename": req.file.filename}},
         {new: true}
         );
 
