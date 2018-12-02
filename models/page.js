@@ -2,15 +2,14 @@ let mongoose = require('mongoose');
 
 let PageSchema = new mongoose.Schema({
     title: String,
-    audio_name: String,
+    audio_filename: String,
     description: String,
     position: Number,
     type: String,
     paragraphs: [{
         position: Number,
         form_type:String,
-        filename:String,
-        image_name:String,
+        image_filename:String,
         description:String
     }],
     multiple_choice_items: [{

@@ -64,8 +64,8 @@ let auth = jwt({
 
 router.get('/file', function (req, res, next) {
     // We used this as reference: https://medium.freecodecamp.org/node-js-streams-everything-you-need-to-know-c9141306be93
-    let file_path_object = "";
-    let file_path = "";
+
+
 
     if (req.query.object_type && req.query.file_name) {
 
