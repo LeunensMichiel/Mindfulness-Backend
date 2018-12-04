@@ -53,19 +53,24 @@ router.post('/login', function (req, res, next) {
     if (!req.body.email || !req.body.password) {
         return res.status(400).json({ message: 'email of wachtwoord was niet ingevuld' });
     }
-
+    console.log("1")
     passport.authenticate('local', function (err, user, info) {
+        console.log("2")
         if (err) {
             return next(err);
         }
+        console.log("3")
         if (!user) {
             return res.status(401).json(info);
         }
-
+        console.log("4")
         if (!user.roles.client) {
             return res.status(401).json(info);
         }
+        console.log("5")
         if (user) {
+
+        console.log("6")
             return res.json({
                 //Aangepast door Michiel op 30/11 om bugs proberen op te lossen van userInfo
                 token: user.generateJWT(),
@@ -83,6 +88,7 @@ router.post('/login', function (req, res, next) {
         } else {
             return res.status(401).json(info);
         }
+        console.log("7")
     })(req, res, next);
 });
 

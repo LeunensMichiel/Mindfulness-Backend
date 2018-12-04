@@ -7,7 +7,8 @@ let PostSchema = new mongoose.Schema({
     page_id:mongoose.Schema.Types.ObjectId,
     inhoud:String,
     afbeelding:String, // voorlopig als string
-    user_id: mongoose.Schema.Types.ObjectId
+    user_id: mongoose.Schema.Types.ObjectId,
+    image_file_name:String
 });
 
 mongoose.model('post', PostSchema);

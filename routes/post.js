@@ -2,6 +2,8 @@ let express = require('express');
 let router = express.Router();
 
 let mongoose = require("mongoose");
+const multer = require('multer');
+const fs = require('fs');
 
 let Sessionmap = mongoose.model('sessionmap');
 let Page = mongoose.model('page');
@@ -15,6 +17,22 @@ let jwt = require('express-jwt');
 let auth = jwt({
     secret: process.env.MINDFULNESS_BACKEND_SECRET,
     _userProperty: 'payload'
+});
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/post_image');
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname);
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    }
 });
 
 
@@ -75,6 +93,27 @@ router.post('/getpost',auth, function (req, res, next) {
 // werkt en wordt gebruikt
 router.post('/post', auth, function (req, res, next) {
     let post = new Post(req.body);
+    post.save(function (err, post) {
+        if (err) {
+            return next(err);
+        }
+        User.findById(req.body.user_id, function (err, user) {
+            if (err) {
+                post.remove();
+                return next(err);
+            }
+            user.posts.push(post)
+            user.save(function (err, user) {
+                if (err) { return next(err); }
+                res.json(post);
+            })
+        })
+    });
+});
+
+router.post('/post/image', auth, upload.single("post_image") ,function(req, res, next) {
+    let post = new Post(req.body);
+    post.image_file_name = req.file.filename
     post.save(function (err, post) {
         if (err) {
             return next(err);
