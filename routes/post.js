@@ -113,20 +113,41 @@ router.post('/post', auth, function (req, res, next) {
 
 router.post('/post/image', auth, upload.single("post_image") ,function(req, res, next) {
     console.log(req.body)
+    console.log("1");
     let post = new Post(req.body.post);
+    console.log("2");
     post.image_file_name = req.file.filename
+    console.log("3");
     post.save(function (err, post) {
+        console.log("4");
         if (err) {
+            console.log("-----------------ERROR_POST_SAVE_START-----------------")
+            console.log(err);
+            console.log("-----------------ERROR_POST_SAVE_END-----------------")
             return next(err);
         }
+        console.log("5");
         User.findById(req.body.post.user_id, function (err, user) {
+            console.log("6");
             if (err) {
                 post.remove();
+                console.log("-----------------ERROR_POST_FIND_USER_START-----------------")
+                console.log(err);
+                console.log("-----------------ERROR_POST_FIND_USER_END-----------------")
                 return next(err);
             }
+            console.log("7");
             user.posts.push(post)
+            console.log("8");
             user.save(function (err, user) {
-                if (err) { return next(err); }
+                console.log("9");
+                if (err) { 
+                    console.log("-----------------ERROR_USER_SAVE_START-----------------")
+                    console.log(err);
+                    console.log("-----------------ERROR_USER_SAVE_END-----------------")
+                    return next(err); 
+                }
+                console.log("10");
                 res.json(post);
             })
         })
