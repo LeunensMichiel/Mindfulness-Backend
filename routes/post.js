@@ -92,12 +92,12 @@ router.post('/getpost',auth, function (req, res, next) {
 
 // werkt en wordt gebruikt
 router.post('/post', auth, function (req, res, next) {
-    let post = new Post(req.body);
+    let post = new Post(req.body.post);
     post.save(function (err, post) {
         if (err) {
             return next(err);
         }
-        User.findById(req.body.user_id, function (err, user) {
+        User.findById(req.body.post.user_id, function (err, user) {
             if (err) {
                 post.remove();
                 return next(err);
@@ -112,7 +112,7 @@ router.post('/post', auth, function (req, res, next) {
 });
 
 router.post('/post/image', auth, upload.single("post_image") ,function(req, res, next) {
-    let post = new Post(req.body);
+    let post = new Post(req.body.post);
     post.image_file_name = req.file.filename
     post.save(function (err, post) {
         if (err) {
