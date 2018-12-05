@@ -113,7 +113,7 @@ router.post('/post', auth, function (req, res, next) {
 
 router.post('/post/image', auth, upload.single("file") ,function(req, res, next) {
     console.log(req.body)
-    console.log(req.file)
+    console.log(req.body.data.file)
     console.log("1");
     let post = new Post(req.body.post);
     console.log("2");
