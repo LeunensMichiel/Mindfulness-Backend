@@ -131,7 +131,7 @@ router.post('/post/image', auth, upload.single("file") ,function(req, res, next)
             return next(err);
         }
         console.log("5");
-        User.findById(req.body.post.user_id, function (err, user) {
+        User.findById(req.body.user_id, function (err, user) {
             console.log("6");
             if (err) {
                 post.remove();
