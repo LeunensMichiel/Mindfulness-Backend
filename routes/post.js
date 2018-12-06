@@ -115,7 +115,7 @@ router.post('/post/image', auth, upload.single("file") ,function(req, res, next)
     console.log(req.body.post)
     console.log(JSON.parse(req.body.post))
     console.log("1");
-    let post = new Post(req.body);
+    let post = new Post(JSON.parse(req.body.post));
     console.log("2");
     post.image_file_name = req.file.filename
     console.log("3");
