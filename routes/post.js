@@ -113,9 +113,10 @@ router.post('/post', auth, function (req, res, next) {
 
 router.post('/post/image', auth, upload.single("file") ,function(req, res, next) {
     console.log(req.body.post)
-    console.log(JSON.parse(req.body.post))
+    var post = JSON.parse(req.body.post)
+    console.log(post);
     console.log("1");
-    let post = new Post(JSON.parse(req.body.post));
+    let post = new Post(post);
     console.log("2");
     post.image_file_name = req.file.filename
     console.log("3");
@@ -128,7 +129,7 @@ router.post('/post/image', auth, upload.single("file") ,function(req, res, next)
             return next(err);
         }
         console.log("5");
-        User.findById(req.body.user_id, function (err, user) {
+        User.findById(post.user_id, function (err, user) {
             console.log("6");
             if (err) {
                 post.remove();
