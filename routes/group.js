@@ -155,13 +155,14 @@ router.post('/group/addMyUserToMyGroup', auth, function(req,res,next){
       console.log(arrayUsers);
       let groep = req.body.group;
       console.log(groep);
-      let query = User.updateMany({_id:{$in:arrayUsers}},{$set:{group:groep}});
+      let query = User.updateMany({_id:{$in:arrayUsers}},{$set:{group:groep,current_session_id:null}});
       query.exec(function(err,result){
         if(err){
             return next(err);
         }
         console.log(result);
-        res.end();
+        //res.end();
+        res.send("ok");
     })
 });
 
@@ -171,13 +172,14 @@ router.post('/group/deleteUserFromGroup', auth, function(req,res,next){
     console.log(arrayUsers);
     //let groep = req.body.group;
     //console.log(groep);
-    let query = User.updateMany({_id:{$in:arrayUsers}},{$set:{group:null}});
+    let query = User.updateMany({_id:{$in:arrayUsers}},{$set:{group:null,current_session_id:null}});
     query.exec(function(err,result){
       if(err){
           return next(err);
       }
       console.log(result);
-      res.end();
+      //res.end();
+      res.send("ok");
   })
 });
 
