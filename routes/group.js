@@ -150,37 +150,38 @@ router.get('/group/getPossibleUsers/:group', auth, function (req, res, next) {
      });
  });
 
-router.post('/group/addMyUserToMyGroup', auth, function(req,res,next){
-      let arrayUsers = req.body.users;
-      console.log(arrayUsers);
-      let groep = req.body.group;
-      console.log(groep);
-      let query = User.updateMany({_id:{$in:arrayUsers}},{$set:{group:groep,current_session_id:null}});
-      query.exec(function(err,result){
-        if(err){
-            return next(err);
-        }
-        console.log(result);
-        //res.end();
-        res.send("ok");
-    })
-});
-
-// api call om meerdere users te verwijderen uit een groep:
-router.post('/group/deleteUserFromGroup', auth, function(req,res,next){
+ router.post('/group/addMyUserToMyGroup', auth, function(req,res,next){
     let arrayUsers = req.body.users;
     console.log(arrayUsers);
-    //let groep = req.body.group;
-    //console.log(groep);
-    let query = User.updateMany({_id:{$in:arrayUsers}},{$set:{group:null,current_session_id:null}});
+    let groep = req.body.group;
+    console.log(groep);
+    let query = User.updateMany({_id:{$in:arrayUsers}},{$set:{group:groep,current_session_id:null}});
     query.exec(function(err,result){
       if(err){
           return next(err);
       }
       console.log(result);
       //res.end();
-      res.send("ok");
+      res.json({resultaat:"ok"});
   })
+});
+
+// api call om meerdere users te verwijderen uit een groep:
+router.post('/group/deleteUserFromGroup', auth, function(req,res,next){
+  let arrayUsers = req.body.users;
+  console.log(arrayUsers);
+  //let groep = req.body.group;
+  //console.log(groep);
+  let query = User.updateMany({_id:{$in:arrayUsers}},{$set:{group:null,current_session_id:null}});
+  query.exec(function(err,result){
+    if(err){
+        return next(err);
+    }
+    console.log(result);
+    //res.end();
+    //res.send("ok");
+    res.json({resultaat:"ok"});
+})
 });
 
 module.exports = router;
