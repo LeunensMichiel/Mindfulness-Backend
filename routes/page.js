@@ -87,12 +87,12 @@ router.put('/page/:page', auth,function(req, res ,next){
     req.page.path_audio = req.body.path_audio;
     req.page.description = req.body.description;
     req.page.position = req.body.position;
-
+    req.page.type_input = req.body.type_input;
     req.page.paragraphs = req.body.paragraphs;
+    req.page.multiple_choice_items = req.body.multiple_choice_items;
 
     req.page.save(function(err, page){
         if (err) {
-            console.log(err);
             return next(err); }
 
         res.json(page);
@@ -101,7 +101,6 @@ router.put('/page/:page', auth,function(req, res ,next){
 
 router.put('/pagefile/:page_with_audio', auth, upload.single("page_file"), function(req, res, next) {
 
-    console.log(req.params);
     let pageQuery = Page.findOneAndUpdate(
         {_id: req.params.page_with_audio},
         {$set: {"audio_filename": req.file.filename}},

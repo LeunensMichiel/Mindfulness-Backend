@@ -23,6 +23,7 @@ require('./models/exercise');
 require('./models/session');
 require('./models/post');
 
+
 require('./config/passport');
 
 // var indexRouter = require('./routes/index');
@@ -52,7 +53,6 @@ app.use('/API/session', sessionRouter);
 app.use('/API/sessionmap', sessionmapRouter);
 app.use('/API/page', pageRouter);
 app.use('/API/post', postRouter);
-// app.use('/API/paragraph', paragraphRouter);
 app.use('/API/group', groupRouter);
 app.use('/API/users', userRouter);
 app.use('/API/file', fileRouter);

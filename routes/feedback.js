@@ -23,7 +23,7 @@ router.post('/feedback', auth, function (req, res, next) {
 router.get('/feedback', auth, function(req, res, next) {
 
 
-    let feedbackQuery = Feedback.find(req.query.filter_feedback | "").populate("session");
+    let feedbackQuery = Feedback.find().populate("session");
 
     feedbackQuery.exec(function(err, listFeedback) {
         if (err) {

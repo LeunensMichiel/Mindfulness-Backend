@@ -12,6 +12,7 @@ let PageSchema = new mongoose.Schema({
         image_filename:String,
         description:String
     }],
+    type_input: String,
     multiple_choice_items: [{
         position: Number,
         message: String
