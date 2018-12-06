@@ -150,16 +150,94 @@ router.get('/group/getPossibleUsers/:group', auth, function (req, res, next) {
      });
  });
 
- //  nog een api call om een user te verwijderen van een groep: een put, gewoon de group pullen van group van user
- // group van user moet een array worden
- /*
- router.put('/group/deleteUserFromGroup/:group',auth, function(req,res){
-    let query = User.findOne({_id:req.user._id});
-    query.updateMany({group:idvangroep},{'$set': {group:null}});
-    res.json(req.group);
+router.post('/group/addMyUserToMyGroup', auth, function(req,res,next){
+      let arrayUsers = req.body.users;
+      console.log(arrayUsers);
+      let groep = req.body.group;
+      console.log(groep);
+      let query = User.updateMany({_id:{$in:arrayUsers}},{$set:{group:groep}});
+      query.exec(function(err,result){
+        if(err){
+            return next(err);
+        }
+        console.log(result);
+        res.end();
+    })
 });
-*/
 
-// nog een api call om een user toe te voegen aan een groep
+// api call om meerdere users te verwijderen uit een groep:
+router.post('/group/deleteUserFromGroup', auth, function(req,res,next){
+    let arrayUsers = req.body.users;
+    console.log(arrayUsers);
+    //let groep = req.body.group;
+    //console.log(groep);
+    let query = User.updateMany({_id:{$in:arrayUsers}},{$set:{group:null}});
+    query.exec(function(err,result){
+      if(err){
+          return next(err);
+      }
+      console.log(result);
+      res.end();
+  })
+});
+
+//  nog een api call om een user te verwijderen van een groep
+/*
+ router.put('/group/deleteUserFromGroup/:group',auth, function(req,res){
+    let deUser = null;
+    let query = User.findOne({_id:req.body.user});
+    query.exec(function(err,user){
+        if(err){
+            return next(err);
+        }
+        if(!user){
+            return next(new Error('not found '+id));
+        }
+        deUser = user;
+        return next();
+    })
+
+    let query2 = deUser.update({group:idvangroep},{'$set': {group:null}});
+    query2.exec(function(err,result){
+        if(err){
+            return next(err);
+        }
+        console.log(result);
+        res.end();
+    })
+    // nog andere dingen verwijderen
+}); */
+
+
+/*
+router.put('/group/addMyUserToMyGroup/:deUser', auth, function(req,res,next){
+    let deUser = req.deUser;
+    console.log("ok");
+    console.log(deUser);
+    deUser.group = req.body.group; // voorlopig
+    console.log(deUser.group);
+    deUser.save(function (err){
+        if(err){
+            return res.send(err);
+        }
+        res.json(req.deUser);
+    })
+    //res.json(req.deUser);
+});
+
+router.param('deUser', function(req,res,next,id){
+    let query = User.findById(id);
+    query.exec(function(err,deUser){
+        if(err){
+            return next(err);
+        }
+        if(!deUser){
+            return next(new Error('not found '+id));
+        }
+        req.deUser = deUser;
+        return next();
+    })
+}); 
+*/
 
 module.exports = router;
