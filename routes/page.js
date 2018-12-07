@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/page_audio');
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         cb(null, (new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname).replace(" ", ""));
     }
 });
@@ -36,7 +36,7 @@ const storageParagraph = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/paragraphs_image');
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         cb(null, new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname);
     }
 });
@@ -81,7 +81,25 @@ router.post('/page', auth, function (req, res, next) {
     });
 });
 
-router.put('/page/:page', auth,function(req, res ,next){
+router.post('/page/changepos', auth, function (req, res, next) {
+    let pageQuery = Page.updateOne({_id: req.body.page1.page_id}, {'$set': {position: req.body.page1.position}});
+    pageQuery.exec(function (err, result) {
+        if (err) {
+            return next(err);
+        }
+
+        let page2Query = Page.updateOne({_id: req.body.page2.page_id}, {'$set': {position: req.body.page2.position}});
+        page2Query.exec(function (err, result) {
+            if (err) {
+                return next(err);
+            }
+
+            res.json(result);
+        });
+    });
+});
+
+router.put('/page/:page', auth, function (req, res, next) {
 
     req.page.title = req.body.title;
     req.page.path_audio = req.body.path_audio;
@@ -91,15 +109,16 @@ router.put('/page/:page', auth,function(req, res ,next){
     req.page.paragraphs = req.body.paragraphs;
     req.page.multiple_choice_items = req.body.multiple_choice_items;
 
-    req.page.save(function(err, page){
+    req.page.save(function (err, page) {
         if (err) {
-            return next(err); }
+            return next(err);
+        }
 
         res.json(page);
     })
 });
 
-router.put('/pagefile/:page_with_audio', auth, upload.single("page_file"), function(req, res, next) {
+router.put('/pagefile/:page_with_audio', auth, upload.single("page_file"), function (req, res, next) {
 
     let pageQuery = Page.findOneAndUpdate(
         {_id: req.params.page_with_audio},
@@ -107,7 +126,7 @@ router.put('/pagefile/:page_with_audio', auth, upload.single("page_file"), funct
         {new: true}
     );
 
-    pageQuery.exec(function(err, page){
+    pageQuery.exec(function (err, page) {
         if (err) {
             return next(err);
         }
@@ -116,16 +135,16 @@ router.put('/pagefile/:page_with_audio', auth, upload.single("page_file"), funct
     });
 });
 
-router.put('/pagefileparagraph/:page_with_paragraph', auth, uploadParagraph.single("page_file"), function(req, res, next) {
+router.put('/pagefileparagraph/:page_with_paragraph', auth, uploadParagraph.single("page_file"), function (req, res, next) {
 
     let pageQuery = Page.findOneAndUpdate(
         {_id: req.params.page_with_paragraph, "paragraphs.position": req.body.par_pos},
         {$set: {"paragraphs.$.image_filename": req.file.filename}},
         {new: true}
-        );
+    );
 
 
-    pageQuery.exec(function(err, page){
+    pageQuery.exec(function (err, page) {
         if (err) {
             return next(err);
         }
