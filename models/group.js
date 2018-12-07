@@ -5,7 +5,16 @@ let GroupSchema = new mongoose.Schema({
     sessionmap_id: {type: mongoose.Schema.Types.ObjectId,
                 ref: 'Sessionmaps'}
     ,actief:Boolean,
-    aanmaakdatum:Date
+    aanmaakdatum:Date,
+    notifications:[{
+        title:String,
+        beschrijving:String,
+        launchtijdstip:Date,
+        group_id:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'group'
+        }
+    }]
 }); 
 
 mongoose.model('group', GroupSchema);

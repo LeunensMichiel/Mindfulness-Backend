@@ -50,6 +50,7 @@ router.put('/group/:group', auth, function(req,res,next){
     let group = req.group;
     group.name = req.body.name;
     group.actief = req.body.actief;
+    group.notifications = req.body.notifications;
     group.save(function (err){
         if(err){
             return res.send(err);
