@@ -49,7 +49,7 @@ UserSchema.methods.generateJWT = function () {
       exp: parseInt(exp.getTime() / 1000),
       firstname: this.firstname,
       lastname: this.lastname,
-      roles: this.roles
+      role: this.roles
 
   }, process.env.MINDFULNESS_BACKEND_SECRET);
 };
