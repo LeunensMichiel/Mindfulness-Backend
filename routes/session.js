@@ -74,6 +74,8 @@ router.post('/session', auth, upload.single("session_image"), function (req, res
 router.put('/session/:session', auth, function (req, res, next) {
     let session = req.session;
     session.title = req.body.title;
+    console.log(session.title);
+    session.description = req.body.description;
     session.position = req.body.position;
     session.save(function (err) {
         if (err) {
@@ -81,6 +83,21 @@ router.put('/session/:session', auth, function (req, res, next) {
         }
         res.json(req.body);
     })
+});
+
+router.put('/sessionWithImage/:session', auth, upload.single("session_image"),function(req, res, next){
+    let session = req.session;
+    session.title = JSON.parse(req.body.session).title;
+    session.description = JSON.parse(req.body.session).description;
+    session.position = JSON.parse(req.body.session).position;
+    session.image_filename = req.file.filename;
+    session.save(function (err){
+        if(err){
+            return res.send(err);
+        }
+        res.json(req.body);
+    })
+
 });
 
 router.get('/sessions/:sessionmapid', auth, function (req, res, next) {
