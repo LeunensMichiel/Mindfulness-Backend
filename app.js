@@ -34,9 +34,9 @@ let sessionRouter = require('./routes/session');
 let sessionmapRouter = require('./routes/sessionmap');
 let pageRouter = require('./routes/page');
 let postRouter = require('./routes/post');
-// let paragraphRouter = require('./routes/paragraph');
 let groupRouter = require('./routes/group');
 let feedbackRouter = require('./routes/feedback');
+let adminRouter = require('./routes/admin');
 
 var app = express();
 
@@ -57,6 +57,7 @@ app.use('/API/group', groupRouter);
 app.use('/API/users', userRouter);
 app.use('/API/file', fileRouter);
 app.use('/API/feedback', feedbackRouter);
+app.use('/API/superadmin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
