@@ -65,6 +65,19 @@ router.put('/group/:group', auth, function(req,res,next){
     })
 });
 
+router.put('/group/sendNotification/:group', auth, function(req,res,next){
+    let group = req.group;
+    if(req.body.notification){
+        group.notifications.push(req.body.notification);
+    }
+    group.save(function (err){
+        if(err){
+            return res.send(err);
+        }
+        res.json(req.group);
+    })
+});
+
 router.param('group', function(req,res,next,id){
     let query = Group.findById(id);
     query.exec(function(err,group){
