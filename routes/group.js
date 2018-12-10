@@ -48,9 +48,28 @@ router.post('/group', auth,  function (req, res, next) {
 
 router.put('/group/:group', auth, function(req,res,next){
     let group = req.group;
-    group.name = req.body.name;
-    group.actief = req.body.actief;
-    group.notifications = req.body.notifications;
+    if(req.body.name){
+        group.name = req.body.name;
+    }
+    if(req.body.actief != null){
+        group.actief = req.body.actief;
+    }
+    if(req.body.notification){
+        group.notifications.push(req.body.notification);
+    }
+    group.save(function (err){
+        if(err){
+            return res.send(err);
+        }
+        res.json(req.group);
+    })
+});
+
+router.put('/group/sendNotification/:group', auth, function(req,res,next){
+    let group = req.group;
+    if(req.body.notification){
+        group.notifications.push(req.body.notification);
+    }
     group.save(function (err){
         if(err){
             return res.send(err);
