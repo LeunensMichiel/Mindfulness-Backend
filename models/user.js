@@ -14,6 +14,7 @@ let UserSchema = new mongoose.Schema({
         client: Boolean,
         nv_admin: Boolean
     },
+    admin_active: Boolean,
     unlocked_sessions: [String],
     current_session_id: mongoose.Types.ObjectId,
     current_exercise_id: mongoose.Types.ObjectId,
@@ -49,7 +50,8 @@ UserSchema.methods.generateJWT = function () {
       exp: parseInt(exp.getTime() / 1000),
       firstname: this.firstname,
       lastname: this.lastname,
-      role: this.roles
+      roles: this.roles,
+      admin_active: this.admin_active || false
 
   }, process.env.MINDFULNESS_BACKEND_SECRET);
 };

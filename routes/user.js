@@ -6,10 +6,6 @@ let Group = mongoose.model('group');
 let passport = require("passport");
 let jwt = require('express-jwt');
 
-/**
- * TODO We should use Aoth2.0 for third party login
- * http://www.passportjs.org/docs/oauth2-api/
- */
 
 let auth = jwt({
     secret: process.env.MINDFULNESS_BACKEND_SECRET,
@@ -126,6 +122,7 @@ router.post('/register/admin', function (req, res, next) {
 
     let user = new User(req.body);
     user.roles.admin = true;
+    user.admin_active = false;
     user.setPassword(req.body.password);
     user.save(function (err) {
         if (err) {
