@@ -17,10 +17,13 @@ router.get("/activeadmin", auth, function (req, res, next) {
         {
             $and: [
                 {
-                    admin_actif: true
+                    admin_active: true
                 },
                 {
                     'roles.admin': true
+                },
+                {
+                    "roles.super_admin": false
                 }
             ]
         }, {
@@ -29,7 +32,7 @@ router.get("/activeadmin", auth, function (req, res, next) {
             lastname: true,
             email: true,
             roles: true,
-            admin_actif: true
+            admin_active: true
         },
         {
             sort: {
@@ -52,10 +55,13 @@ router.get("/nonactiveadmin", auth, function (req, res, next) {
         {
             $and: [
                 {
-                    admin_actif: false
+                    admin_active: false
                 },
                 {
                     'roles.admin': true
+                },
+                {
+                    "roles.super_admin": false
                 }
             ]
         }, {
@@ -77,17 +83,14 @@ router.get("/nonactiveadmin", auth, function (req, res, next) {
     });
 });
 
-router.put("/admin/:admin", auth, function(req, res, next) {
-    let adminQuery = User.findOneAndUpdate(
-        {_id: req.params.admin},
-        {"$set": {"admin_active": req.body.admin_active}},
-        {new: true});
+router.put("/admin/:admin", auth, function (req, res, next) {
 
-    adminQuery.exec(function(err, result){
+    req.admin.admin_active = !req.admin.admin_active;
+    req.admin.save(function(err, result) {
         if (err) {
             return next(err);
         }
-
+        console.log(result);
         res.json(result);
     });
 });
@@ -101,16 +104,16 @@ router.delete('/admin/:admin', auth, function (req, res, next) {
     });
 });
 
-router.param("admin", function(req, res, next, id) {
-   let adminQuery = User.findById(id);
+router.param("admin", function (req, res, next, id) {
+    let adminQuery = User.findById(id);
+    adminQuery.exec(function (err, result) {
+        if (err) {
+            return next(err);
+        }
 
-   adminQuery.exec(function(err, result){
-      if (err) {
-          return next(err);
-      }
-
-      req.admin = result;
-   });
+        req.admin = result;
+        return next();
+    });
 });
 
 module.exports = router;
