@@ -91,11 +91,11 @@ router.put('/sessionWithImage/:session', auth, upload.single("session_image"),fu
     session.description = JSON.parse(req.body.session).description;
     session.position = JSON.parse(req.body.session).position;
     session.image_filename = req.file.filename;
-    session.save(function (err){
+    session.save(function (err, result){
         if(err){
             return res.send(err);
         }
-        res.json(req.body);
+        res.json(result);
     })
 
 });
