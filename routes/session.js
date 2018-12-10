@@ -74,7 +74,6 @@ router.post('/session', auth, upload.single("session_image"), function (req, res
 router.put('/session/:session', auth, function (req, res, next) {
     let session = req.session;
     session.title = req.body.title;
-    console.log(session.title);
     session.description = req.body.description;
     session.position = req.body.position;
     session.save(function (err) {
