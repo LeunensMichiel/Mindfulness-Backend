@@ -7,13 +7,9 @@ let GroupSchema = new mongoose.Schema({
     ,actief:Boolean,
     aanmaakdatum:Date,
     notifications:[{
-        title:String,
-        beschrijving:String,
-        launchtijdstip:Date,
-        group_id:{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'group'
-        }
+        notification_title:String,
+        notification_beschrijving:String,
+        notification_launchtijdstip:Date
     }]
 }); 
 
