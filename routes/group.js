@@ -57,6 +57,10 @@ router.put('/group/:group', auth, function(req,res,next){
     if(req.body.notification){
         group.notifications.push(req.body.notification);
     }
+    if(req.body.sessionmap_id)
+    {
+        group.sessionmap_id = req.body.sessionmap_id;
+    }
     group.save(function (err){
         if(err){
             return res.send(err);
