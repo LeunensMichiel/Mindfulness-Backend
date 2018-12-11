@@ -59,7 +59,6 @@ let auth = jwt({
 });
 
 router.get('/pages/:exercise_id', function (req, res, next) {
-    console.log(req.pagess);
     res.json(req.pagess);
 });
 
@@ -82,13 +81,12 @@ router.post('/page', auth, function (req, res, next) {
 });
 
 router.post('/page/changepos', auth, function (req, res, next) {
-    let pageQuery = Page.updateOne({_id: req.body.page1.page_id}, {'$set': {position: req.body.page1.position}});
+    let pageQuery = Page.updateOne({_id: req.body.page1._id}, {'$set': {position: req.body.page1.position}});
     pageQuery.exec(function (err, result) {
         if (err) {
             return next(err);
         }
-
-        let page2Query = Page.updateOne({_id: req.body.page2.page_id}, {'$set': {position: req.body.page2.position}});
+        let page2Query = Page.updateOne({_id: req.body.page2._id}, {'$set': {position: req.body.page2.position}});
         page2Query.exec(function (err, result) {
             if (err) {
                 return next(err);
