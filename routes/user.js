@@ -37,11 +37,13 @@ router.post('/register', function (req, res, next) {
     if (!req.body.email || !req.body.password ) {
         return res.status(400).json({ message: 'email of wachtwoord was niet ingevuld' });
     }
-
-    let user = new User()
+    console.log("1");
+    let user = new User();
+    console.log("2");
     user.email = req.body.email;
+    console.log("3");
     user.roles.client = true;
-    user.group = group;
+    console.log("4");
     user.setPassword(req.body.password);
     user.feedbackSubscribed = true;
     user.save(function (err) {
