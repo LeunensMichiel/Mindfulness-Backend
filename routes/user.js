@@ -239,14 +239,16 @@ router.put('/user/feedback', auth, function (req, res, next) {
     //     }
     //     res.json({result: "geslaagd"});
     // });
-});router.put('/user/:user', function (req, res, next) {
+});
+router.put('/user/:user', function (req, res, next) {
     req.paramUser.group = req.body.group_id;
 
     req.paramUser.save(function (err, user) {
         if (err) {
             return res.send(err);
         }
-        res.json(user);
+        console.log(user.group);
+        res.json(user.group);
     })
 });
 
