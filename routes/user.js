@@ -5,11 +5,28 @@ let User = mongoose.model('user');
 let Group = mongoose.model('group');
 let passport = require("passport");
 let jwt = require('express-jwt');
+const multer = require('multer');
 
 
 let auth = jwt({
     secret: process.env.MINDFULNESS_BACKEND_SECRET,
     _userProperty: 'payload'
+});
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/profile_image');
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname);
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    }
 });
 /**
  * The api calls creates a user
@@ -236,6 +253,13 @@ router.put('/user/feedback', auth, function (req, res, next) {
         }
         res.json(user);
     })
+});
+
+router.put('/user/:user/image', auth, upload.single("file") ,function(req, res, next) {
+    User.findByIdAndUpdate(req.paramUser._id, { $set: { "image_file_name":req.file.filename } }, function(err, user){
+        if (err) { return next(err); }
+        res.json(user)
+    });
 });
 
 module.exports = router;

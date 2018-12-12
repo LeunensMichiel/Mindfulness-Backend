@@ -1,0 +1,1 @@
+Here are the user profile pictures stored

@@ -26,7 +26,8 @@ let UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'post'
     }],
-    feedbackSubscribed: Boolean
+    feedbackSubscribed: Boolean,
+    image_file_name: String
 });
 
 UserSchema.methods.setPassword = function (password) {
