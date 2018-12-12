@@ -241,15 +241,20 @@ router.put('/user/feedback', auth, function (req, res, next) {
     // });
 });
 router.put('/user/:user', function (req, res, next) {
-    req.paramUser.group = req.body.group_id;
 
-    req.paramUser.save(function (err, user) {
-        if (err) {
-            return res.send(err);
-        }
-        console.log(user.group);
-        res.json(user.group);
+    Group.findById(req.body.group_id, function (err, group) {
+        if (err) { return next(err) }
+        req.paramUser.group = req.body.group_id;
+        req.paramUser.save(function (err, user) {
+            if (err) {
+                return res.send(err);
+            }
+            console.log(user.group);
+            res.json(group);
+        })
     })
+
+
 });
 
 router.put('/user/:user/image', auth, upload.single("file") ,function(req, res, next) {
