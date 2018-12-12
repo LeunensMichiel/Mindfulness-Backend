@@ -34,32 +34,25 @@ const upload = multer({
  * We will only need this api call to put user manually into the database
  */
 router.post('/register', function (req, res, next) {
-
-    if (!req.body.email || !req.body.password || !req.body.groups_code) {
-        return res.status(400).json({ message: 'email of wachtwoord of groups_code was niet ingevuld' });
+    if (!req.body.email || !req.body.password ) {
+        return res.status(400).json({ message: 'email of wachtwoord was niet ingevuld' });
     }
 
-    let query = Group.findById(req.body.groups_code);
-    query.exec(function (err, group) {
-        let user = new User();
-        //user.firstname = req.body.firstname;
-        //user.lastname = req.body.lastname;
-        user.email = req.body.email;
-        user.roles.client = true;
-        user.group = group;
-        user.setPassword(req.body.password);
-        user.feedbackSubscribed = true;
-        user.save(function (err) {
-            if (err) {
-                return next(err);
-            }
-            return res.json({
-                token: user.generateJWT(),
-                _id: user._id
-            })
-        });
+    let user = new User()
+    user.email = req.body.email;
+    user.roles.client = true;
+    user.group = group;
+    user.setPassword(req.body.password);
+    user.feedbackSubscribed = true;
+    user.save(function (err) {
+        if (err) {
+            return next(err);
+        }
+        return res.json({
+            token: user.generateJWT(),
+            _id: user._id
+        })
     });
-
 });
 
 router.post('/login', function (req, res, next) {
