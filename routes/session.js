@@ -1,46 +1,48 @@
 let express = require('express');
 let router = express.Router();
 const multer = require('multer');
-const fs = require('fs');
+
 
 let mongoose = require("mongoose");
 
 let Sessionmap = mongoose.model('sessionmap');
 let Session = mongoose.model('session');
 
-
-let jwt = require('express-jwt');
+let auth = require('../config/auth_config');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/session_image');
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         cb(null, new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname);
     }
 });
 
-// through this variable we filter what files we accept and what not
-// const fileFilter = (req, file, cb) => {
-//
-// }
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+        cb(null, true);
+    }
+    else {
+        cb(null, false)
+    }
+};
 
 const upload = multer({
     storage: storage,
     limits: {
         fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+});
+
+
+router.post('/session', auth.auth, auth.authAdmin, upload.single("session_image"), function (req, res, next) {
+
+    if (!req.file) {
+        return next(new Error("Wrong file type!"));
     }
-});
 
-let auth = jwt({
-    secret: process.env.MINDFULNESS_BACKEND_SECRET,
-    _userProperty: 'payload'
-});
-
-// let adminAuth = function  (req, res, next) {
-//     if req.
-// }
-router.post('/session', auth, upload.single("session_image"), function (req, res, next) {
     let session = new Session(JSON.parse(req.body.session));
     session.image_filename = req.file.filename;
     session.save(function (err, session) {
@@ -55,7 +57,7 @@ router.post('/session', auth, upload.single("session_image"), function (req, res
         sessionmapQuerry.exec(function (err, sessionmap) {
             let sessionmapError = err;
             if (err) {
-                session.remove(function(err, session) {
+                session.remove(function (err, session) {
                     if (err) {
                         return next(err);
                     }
@@ -71,7 +73,7 @@ router.post('/session', auth, upload.single("session_image"), function (req, res
     });
 });
 
-router.put('/session/:session', auth, function (req, res, next) {
+router.put('/session/:session', auth.auth, auth.authAdmin, function (req, res, next) {
     let session = req.session;
     session.title = req.body.title;
     session.description = req.body.description;
@@ -84,14 +86,18 @@ router.put('/session/:session', auth, function (req, res, next) {
     })
 });
 
-router.put('/sessionWithImage/:session', auth, upload.single("session_image"),function(req, res, next){
+router.put('/sessionWithImage/:session', auth.auth, auth.authAdmin, upload.single("session_image"), function (req, res, next) {
+    if (!req.file) {
+        return next(new Error("Wrong file type!"));
+    }
+
     let session = req.session;
     session.title = JSON.parse(req.body.session).title;
     session.description = JSON.parse(req.body.session).description;
     session.position = JSON.parse(req.body.session).position;
     session.image_filename = req.file.filename;
-    session.save(function (err, result){
-        if(err){
+    session.save(function (err, result) {
+        if (err) {
             return res.send(err);
         }
         res.json(result);
@@ -99,7 +105,7 @@ router.put('/sessionWithImage/:session', auth, upload.single("session_image"),fu
 
 });
 
-router.get('/sessions/:sessionmapid', auth, function (req, res, next) {
+router.get('/sessions/:sessionmapid', auth.auth, function (req, res, next) {
     res.json(req.sessions);
 });
 
@@ -117,11 +123,11 @@ router.param('sessionmapid', function (req, res, next, id) {
     })
 });
 
-router.get('/session/:session', auth, function (req, res, next) {
+router.get('/session/:session', auth.auth, function (req, res, next) {
     res.json(req.session);
 });
 
-router.delete('/session/:session', auth,  function (req, res) {
+router.delete('/session/:session', auth.auth, auth.authAdmin, function (req, res) {
     req.session.remove(function (err) {
         if (err) {
             return next(err)
@@ -148,8 +154,8 @@ router.param('session', function (req, res, next, id) {
     })
 });
 
-router.get('/session_detailed/:session_with_childs',auth,  function(req, res) {
-   res.json(req.session);
+router.get('/session_detailed/:session_with_childs', auth.auth, auth.authAdmin, function (req, res) {
+    res.json(req.session);
 });
 
 router.param('session_with_childs', function (req, res, next, id) {
@@ -176,9 +182,6 @@ router.param('session_with_childs', function (req, res, next, id) {
         return next();
     })
 });
-
-
-
 
 
 module.exports = router;

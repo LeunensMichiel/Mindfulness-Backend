@@ -4,15 +4,10 @@ let router = express.Router();
 let mongoose = require("mongoose");
 
 let User = mongoose.model('user');
-let jwt = require('express-jwt');
 
+let auth = require('../config/auth_config');
 
-let auth = jwt({
-    secret: process.env.MINDFULNESS_BACKEND_SECRET,
-    _userProperty: 'payload'
-});
-
-router.get("/activeadmin", auth, function (req, res, next) {
+router.get("/activeadmin", auth.auth, auth.authSuperAdmin, function (req, res, next) {
     let adminQuery = User.find(
         {
             $and: [
@@ -50,7 +45,7 @@ router.get("/activeadmin", auth, function (req, res, next) {
     });
 });
 
-router.get("/nonactiveadmin", auth, function (req, res, next) {
+router.get("/nonactiveadmin", auth.auth, auth.authSuperAdmin, function (req, res, next) {
     let adminQuery = User.find(
         {
             $and: [
@@ -83,7 +78,7 @@ router.get("/nonactiveadmin", auth, function (req, res, next) {
     });
 });
 
-router.put("/admin/:admin", auth, function (req, res, next) {
+router.put("/admin/:admin", auth.auth, auth.authSuperAdmin, function (req, res, next) {
 
     req.admin.admin_active = !req.admin.admin_active;
     req.admin.save(function(err, result) {
@@ -95,7 +90,7 @@ router.put("/admin/:admin", auth, function (req, res, next) {
     });
 });
 
-router.delete('/admin/:admin', auth, function (req, res, next) {
+router.delete('/admin/:admin', auth.auth, auth.authSuperAdmin, function (req, res, next) {
     req.admin.remove(function (err) {
         if (err) return next(err);
 
