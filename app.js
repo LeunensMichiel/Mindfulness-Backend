@@ -90,12 +90,12 @@ app.use((error, req, res, next) => {
 //     res.json(err.message);
 // });
 
-// app.post('/upload',function(req,res){
+// app.post('/uploadAudio',function(req,res){
 //     console.log(req.files.image.__dirname);
 //     console.log(req.files.image.dirname);
 //     console.log(req.files.image.path);
 //     fs.readFile(req.files.image.path, function(err,data){
-//         var dirname = "../../file-upload";
+//         var dirname = "../../file-uploadAudio";
 //         var newPath = dirname + "/uploads/" + req.files.image.dirname;
 //         fs.writeFile(newPath,data,function(err){
 //             if(err){
@@ -110,7 +110,7 @@ app.use((error, req, res, next) => {
 
 app.get('/uploads/:file',function(req,res){
     file = req.params.file;
-    var dirname = "../../file-upload";
+    var dirname = "../../file-uploadAudio";
     var img = fs.readFileSync(dirname + "/uploads/" + file);
     res.writeHead(200,{'Content-Type':'image/jpg'});
     res.end(img,'binary');

@@ -1,7 +1,5 @@
 let express = require('express');
 let router = express.Router();
-const multer = require('multer');
-
 
 let mongoose = require("mongoose");
 
@@ -10,34 +8,9 @@ let Session = mongoose.model('session');
 
 let auth = require('../config/auth_config');
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/session_image');
-    },
-    filename: function (req, file, cb) {
-        cb(null, new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname);
-    }
-});
+let fileUploadMulter = require('../config/multer_config');
 
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
-        cb(null, true);
-    }
-    else {
-        cb(null, false)
-    }
-};
-
-const upload = multer({
-    storage: storage,
-    limits: {
-        fileSize: 1024 * 1024 * 5
-    },
-    fileFilter: fileFilter
-});
-
-
-router.post('/session', auth.auth, auth.authAdmin, upload.single("session_image"), function (req, res, next) {
+router.post('/session', auth.auth, auth.authAdmin, fileUploadMulter.uploadImage.single("session_image"), function (req, res, next) {
 
     if (!req.file) {
         return next(new Error("Wrong file type!"));
@@ -86,7 +59,7 @@ router.put('/session/:session', auth.auth, auth.authAdmin, function (req, res, n
     })
 });
 
-router.put('/sessionWithImage/:session', auth.auth, auth.authAdmin, upload.single("session_image"), function (req, res, next) {
+router.put('/sessionWithImage/:session', auth.auth, auth.authAdmin, fileUploadMulter.uploadImage.single("session_image"), function (req, res, next) {
     if (!req.file) {
         return next(new Error("Wrong file type!"));
     }

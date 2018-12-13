@@ -2,80 +2,12 @@ let express = require('express');
 let router = express.Router();
 
 let auth = require('../config/auth_config');
-
-const multer = require('multer');
+let fileUploadMulter = require('../config/multer_config');
 
 let mongoose = require("mongoose");
 
 let Page = mongoose.model('page');
 let Exercise = mongoose.model('exercise');
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/page_audio');
-    },
-    filename: function (req, file, cb) {
-        cb(null, (new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname).replace(" ", ""));
-    }
-});
-
-const audioFileFilter = (req, file, cb) => {
-    if (
-        file.mimetype == 'audio/mpeg' ||
-        file.mimetype == 'audio/mp3' ||
-        file.mimetype == 'audio/aac' ||
-        file.mimetype == 'audio/x-aac' ||
-        file.mimetype == 'audio/wav' ||
-        file.mimetype == 'audio/wave'
-    ) {
-        cb(null, true);
-    }
-    else
-    {
-        cb(null, false)
-    }
-};
-
-const upload = multer({
-    storage: storage,
-    limits: {
-        files: 1,
-        fileSize: 1024 * 1024 * 10
-    },
-    fileFilter: audioFileFilter
-});
-
-const storageParagraph = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/paragraphs_image');
-    },
-    filename: function (req, file, cb) {
-        cb(null, new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname);
-    }
-});
-
-
-
-const imagefileFilter = (req, file, cb) => {
-    if (file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
-        cb(null, true);
-    }
-    else
-    {
-        cb(null, false)
-    }
-};
-
-
-const uploadParagraph = multer({
-    storage: storageParagraph,
-    limits: {
-        files: 1,
-        fileSize: 1024 * 1024 * 5
-    },
-    fileFilter: imagefileFilter
-});
-
 
 router.get('/pages/:exercise_id', auth.auth, function (req, res, next) {
     res.json(req.pagess);
@@ -135,7 +67,7 @@ router.put('/page/:page', auth.auth, auth.authAdmin, function (req, res, next) {
     })
 });
 
-router.put('/pagefile/:page_with_audio', auth.auth, auth.authAdmin, upload.single("page_file"), function (req, res, next) {
+router.put('/pagefile/:page_with_audio', auth.auth, auth.authAdmin, fileUploadMulter.uploadAudio.single("page_file"), function (req, res, next) {
 
     if (!req.file) {
         return next(new Error("Wrong file type!"));
@@ -156,7 +88,7 @@ router.put('/pagefile/:page_with_audio', auth.auth, auth.authAdmin, upload.singl
     });
 });
 
-router.put('/pagefileparagraph/:page_with_paragraph', auth.auth, auth.authAdmin, uploadParagraph.single("page_file"), function (req, res, next) {
+router.put('/pagefileparagraph/:page_with_paragraph', auth.auth, auth.authAdmin, fileUploadMulter.uploadImage.single("page_file"), function (req, res, next) {
 
     if (!req.file) {
         return next(new Error("Wrong file type!"));
