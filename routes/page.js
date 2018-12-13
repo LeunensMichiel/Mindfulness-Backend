@@ -3,6 +3,7 @@ let router = express.Router();
 
 let auth = require('../config/auth_config');
 let fileUploadMulter = require('../config/multer_config');
+let fileManager = require('../config/manage_files');
 
 let mongoose = require("mongoose");
 
@@ -84,11 +85,17 @@ router.put('/pagefile/:page_with_audio', auth.auth, auth.authAdmin, fileUploadMu
             return next(err);
         }
 
+        let oldPage = JSON.parse(req.body.page);
+
+        if (oldPage.audio_filename) {
+            fileManager.removeFile(oldPage.audio_filename, "page_audio");
+        }
+
         res.json(page);
     });
 });
 
-router.put('/pagefileparagraph/:page_with_paragraph', auth.auth, auth.authAdmin, fileUploadMulter.uploadImage.single("page_file"), function (req, res, next) {
+router.put('/pagefileparagraph/:page_with_paragraph', auth.auth, auth.authAdmin, fileUploadMulter.uploadParagraphImage.single("page_file"), function (req, res, next) {
 
     if (!req.file) {
         return next(new Error("Wrong file type!"));
@@ -106,13 +113,31 @@ router.put('/pagefileparagraph/:page_with_paragraph', auth.auth, auth.authAdmin,
             return next(err);
         }
 
+        if (req.body.par_imageFilename) {
+            fileManager.removeFile(req.body.par_imageFilename, "paragraphs_image");
+        }
+
         res.json(page);
     });
 });
 
 router.delete('/page/:page', auth.auth, auth.authAdmin, function (req, res, next) {
-    req.page.remove(function (err) {
+    req.page.remove(function (err, page) {
         if (err) return next(err);
+
+        if (page.audio_filename) {
+            fileManager.removeFile(page.audio_filename, "page_audio");
+        }
+
+        if (page.type = "TEXT") {
+            if (page.paragraphs.length !== 0) {
+                page.paragraphs.forEach(it => {
+                    if (it.image_filename) {
+                        fileManager.removeFile(it.image_filename, "paragraphs_image");
+                    }
+                });
+            }
+        }
 
         res.json({'message': 'Delete was successful'});
 

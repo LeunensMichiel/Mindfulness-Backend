@@ -16,7 +16,7 @@ SessionSchema.pre('remove', function (next) {
     //     { _id: { $in: this.execPopulate } },
     //     next)
 
-    this.model('sessionmap').update({},
+    this.model('sessionmap').updateOne({},
         { $pull: { sessions: this._id } },
         { safe: true, multi: true },
         next

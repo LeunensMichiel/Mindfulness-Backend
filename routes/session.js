@@ -7,10 +7,10 @@ let Sessionmap = mongoose.model('sessionmap');
 let Session = mongoose.model('session');
 
 let auth = require('../config/auth_config');
-
+let fileManager = require('../config/manage_files');
 let fileUploadMulter = require('../config/multer_config');
 
-router.post('/session', auth.auth, auth.authAdmin, fileUploadMulter.uploadImage.single("session_image"), function (req, res, next) {
+router.post('/session', auth.auth, auth.authAdmin, fileUploadMulter.uploadSessionImage.single("session_image"), function (req, res, next) {
 
     if (!req.file) {
         return next(new Error("Wrong file type!"));
@@ -59,12 +59,16 @@ router.put('/session/:session', auth.auth, auth.authAdmin, function (req, res, n
     })
 });
 
-router.put('/sessionWithImage/:session', auth.auth, auth.authAdmin, fileUploadMulter.uploadImage.single("session_image"), function (req, res, next) {
+router.put('/sessionWithImage/:session', auth.auth, auth.authAdmin, fileUploadMulter.uploadSessionImage.single("session_image"), function (req, res, next) {
     if (!req.file) {
         return next(new Error("Wrong file type!"));
     }
 
+
     let session = req.session;
+
+    let oldFileName = session.image_filename;
+
     session.title = JSON.parse(req.body.session).title;
     session.description = JSON.parse(req.body.session).description;
     session.position = JSON.parse(req.body.session).position;
@@ -73,6 +77,9 @@ router.put('/sessionWithImage/:session', auth.auth, auth.authAdmin, fileUploadMu
         if (err) {
             return res.send(err);
         }
+
+        fileManager.removeFile(oldFileName, "session_image");
+        console.log("test");
         res.json(result);
     })
 
@@ -101,12 +108,14 @@ router.get('/session/:session', auth.auth, function (req, res, next) {
 });
 
 router.delete('/session/:session', auth.auth, auth.authAdmin, function (req, res) {
-    req.session.remove(function (err) {
+    req.session.remove(function (err, session) {
         if (err) {
             return next(err)
         }
 
-        res.json(req.session);
+        fileManager.removeFile(session.image_filename, "session_image");
+
+        res.json(session);
 
     });
 });
