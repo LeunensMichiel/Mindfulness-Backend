@@ -175,8 +175,7 @@ router.param('session_with_childs', function (req, res, next, id) {
             return next(new Error('not found ' + id));
         }
 
-        console.log(session);
-        console.log(session.exercises);
+
         req.session = session;
 
         return next();

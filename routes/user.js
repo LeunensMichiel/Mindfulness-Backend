@@ -240,6 +240,7 @@ router.put('/user/:user', auth.auth, function (req, res, next) {
                res.json(group);
            })
 });
+});
 
 router.put('/user/:user/image', auth.auth, upload.single("file") ,function(req, res, next) {
     User.findByIdAndUpdate(req.paramUser._id, { $set: { "image_file_name":req.file.filename } }, function(err, user){
