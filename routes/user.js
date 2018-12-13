@@ -4,13 +4,10 @@ let mongoose = require('mongoose');
 let User = mongoose.model('user');
 let Group = mongoose.model('group');
 let passport = require("passport");
-let jwt = require('express-jwt');
+
+let auth = require('../config/auth_config');
 
 
-let auth = jwt({
-    secret: process.env.MINDFULNESS_BACKEND_SECRET,
-    _userProperty: 'payload'
-});
 /**
  * The api calls creates a user
  * For android application as role 'client'
@@ -146,14 +143,11 @@ router.post('/checkemail', function (req, res, next) {
         });
 });
 
-router.get('/user/:user',auth, function (req, res, next) {
-    console.log(req.paramUser);
+router.get('/user/:user',auth.auth, function (req, res, next) {
     res.json(req.paramUser)
 })
 
-router.get('/group/:user',auth, function (req, res, next) {
-    console.log(req.paramUser)
-    console.log(req.paramUser.group);
+router.get('/group/:user',auth.auth, function (req, res, next) {
     res.json(req.paramUser.group)
 
 })
@@ -176,7 +170,7 @@ router.param('user', function (req, res, next, id) {
     })
 });
 
-router.post('/user', auth, function (req, res, next) {
+router.post('/user', auth.auth, function (req, res, next) {
     let query = User.findById(req.body.id);
 
     query.exec(function (err, user) {
@@ -198,7 +192,7 @@ router.post('/user', auth, function (req, res, next) {
     });
 });
 
-router.put('/user/feedback', auth, function (req, res, next) {
+router.put('/user/feedback', auth.auth, function (req, res, next) {
     let query = User.findById(req.body._id);
 
     query.exec(function (err, user) {
@@ -218,16 +212,10 @@ router.put('/user/feedback', auth, function (req, res, next) {
             res.json({result: "geslaagd"});
         });
     });
-    // console.log(req);
-    // req.user.feedbackSubscribed = req.body.feedbackSubscribed;
-    // console.log(req.user);
-    // req.user.save(function (err) {
-    //     if (err) {
-    //         return res.send(err);
-    //     }
-    //     res.json({result: "geslaagd"});
-    // });
-});router.put('/user/:user', function (req, res, next) {
+
+});
+
+router.put('/user/:user', auth.auth, function (req, res, next) {
     req.paramUser.group = req.body.group_id;
 
     req.paramUser.save(function (err, user) {

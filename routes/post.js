@@ -3,27 +3,17 @@ let router = express.Router();
 
 let mongoose = require("mongoose");
 const multer = require('multer');
-const fs = require('fs');
 
-let Sessionmap = mongoose.model('sessionmap');
-let Page = mongoose.model('page');
-let Session = mongoose.model('session');
-let Exercise = mongoose.model('exercise');
 let Post = mongoose.model('post');
 let User = mongoose.model('user');
 
-let jwt = require('express-jwt');
-
-let auth = jwt({
-    secret: process.env.MINDFULNESS_BACKEND_SECRET,
-    _userProperty: 'payload'
-});
+let auth = require('../config/auth_config');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/post_image');
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         cb(null, new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname);
     }
 });
@@ -37,7 +27,7 @@ const upload = multer({
 
 
 //versie2
-router.post('/getpost',auth, function (req, res, next) {
+router.post('/getpost', auth.auth, function (req, res, next) {
     let query = Post.findOne({
         "sessionmap_id": req.body.sessionmap_id, "session_id": req.body.session_id,
         "exercise_id": req.body.exercise_id, "page_id": req.body.page_id, "user_id": req.body.user_id
@@ -89,9 +79,8 @@ router.post('/getpost',auth, function (req, res, next) {
 });
 
 
-
 // werkt en wordt gebruikt
-router.post('/post', auth, function (req, res, next) {
+router.post('/post', auth.auth, function (req, res, next) {
     let post = new Post(req.body);
     post.save(function (err, post) {
         if (err) {
@@ -104,14 +93,16 @@ router.post('/post', auth, function (req, res, next) {
             }
             user.posts.push(post)
             user.save(function (err, user) {
-                if (err) { return next(err); }
+                if (err) {
+                    return next(err);
+                }
                 res.json(post);
             })
         })
     });
 });
 
-router.post('/post/image', auth, upload.single("file") ,function(req, res, next) {
+router.post('/post/image', auth.auth, upload.single("file"), function (req, res, next) {
     console.log(req.body.post)
     var tempPost = JSON.parse(req.body.post)
     console.log(tempPost);
@@ -143,11 +134,11 @@ router.post('/post/image', auth, upload.single("file") ,function(req, res, next)
             console.log("8");
             user.save(function (err, user) {
                 console.log("9");
-                if (err) { 
+                if (err) {
                     console.log("-----------------ERROR_USER_SAVE_START-----------------")
                     console.log(err);
                     console.log("-----------------ERROR_USER_SAVE_END-----------------")
-                    return next(err); 
+                    return next(err);
                 }
                 console.log("10");
                 res.json(post);
@@ -156,23 +147,25 @@ router.post('/post/image', auth, upload.single("file") ,function(req, res, next)
     });
 });
 
-router.put('/post', function(req,res,next){
-    Post.findByIdAndUpdate(req.body._id , req.body, function(err, post){
-        if (err) { return next(err) }
+router.put('/post', auth.auth,function (req, res, next) {
+    Post.findByIdAndUpdate(req.body._id, req.body, function (err, post) {
+        if (err) {
+            return next(err)
+        }
         res.json(post)
     })
 });
 
-router.get('/checkpost/:post_page_id', function(req, res, next){
+router.get('/checkpost/:post_page_id', function (req, res, next) {
     res.json(req.post)
 });
 
-router.get('/post/:user', function(req, res, next){
+router.get('/post/:user', function (req, res, next) {
     res.json(req.user.posts)
 });
 
 // werkt en wordt gebruikt
-router.put('/post/:post',auth, function (req, res, next) {
+router.put('/post/:post', auth.auth, function (req, res, next) {
     let post = req.post;
     post.sessionmap_id = req.body.sessionmap_id;
     post.session_id = req.body.session_id;
@@ -206,21 +199,29 @@ router.param('post', function (req, res, next, id) {
     })
 });
 
-router.param('post_page_id', function(req, res, next, id){
+router.param('post_page_id', function (req, res, next, id) {
     let query = Post.findOne({'page_id': id});
-    query.exec(function(err, post){
-        if (err) { return next(err); }
-        if (!post) { req.post = { '_id': 'none' }}
-        if (post) { req.post = post }
+    query.exec(function (err, post) {
+        if (err) {
+            return next(err);
+        }
+        if (!post) {
+            req.post = {'_id': 'none'}
+        }
+        if (post) {
+            req.post = post
+        }
         return next();
     });
 });
 
-router.param('user', function(req, res, next, id) {
+router.param('user', function (req, res, next, id) {
     let query = User.findById(id)
         .populate('posts')
-    query.exec(function(err, user){
-        if (err) { return next(err) }
+    query.exec(function (err, user) {
+        if (err) {
+            return next(err)
+        }
         req.user = user
         return next()
     });

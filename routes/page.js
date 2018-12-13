@@ -1,15 +1,14 @@
 let express = require('express');
 let router = express.Router();
+
+let auth = require('../config/auth_config');
+
 const multer = require('multer');
-const fs = require('fs');
 
 let mongoose = require("mongoose");
 
 let Page = mongoose.model('page');
 let Exercise = mongoose.model('exercise');
-
-
-let jwt = require('express-jwt');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -20,16 +19,30 @@ const storage = multer.diskStorage({
     }
 });
 
-// through this variable we filter what files we accept and what not
-// const fileFilter = (req, file, cb) => {
-//
-// }
+const audioFileFilter = (req, file, cb) => {
+    if (
+        file.mimetype == 'audio/mpeg' ||
+        file.mimetype == 'audio/mp3' ||
+        file.mimetype == 'audio/aac' ||
+        file.mimetype == 'audio/x-aac' ||
+        file.mimetype == 'audio/wav' ||
+        file.mimetype == 'audio/wave'
+    ) {
+        cb(null, true);
+    }
+    else
+    {
+        cb(null, false)
+    }
+};
 
 const upload = multer({
     storage: storage,
     limits: {
+        files: 1,
         fileSize: 1024 * 1024 * 10
-    }
+    },
+    fileFilter: audioFileFilter
 });
 
 const storageParagraph = multer.diskStorage({
@@ -41,28 +54,34 @@ const storageParagraph = multer.diskStorage({
     }
 });
 
-// through this variable we filter what files we accept and what not
-// const fileFilter = (req, file, cb) => {
-//
-// }
+
+
+const imagefileFilter = (req, file, cb) => {
+    if (file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+        cb(null, true);
+    }
+    else
+    {
+        cb(null, false)
+    }
+};
+
 
 const uploadParagraph = multer({
     storage: storageParagraph,
     limits: {
+        files: 1,
         fileSize: 1024 * 1024 * 5
-    }
+    },
+    fileFilter: imagefileFilter
 });
 
-let auth = jwt({
-    secret: process.env.MINDFULNESS_BACKEND_SECRET,
-    _userProperty: 'payload'
-});
 
-router.get('/pages/:exercise_id', function (req, res, next) {
+router.get('/pages/:exercise_id', auth.auth, function (req, res, next) {
     res.json(req.pagess);
 });
 
-router.post('/page', auth, function (req, res, next) {
+router.post('/page', auth.auth, auth.authAdmin, function (req, res, next) {
     let page = new Page(req.body);
 
     page.save(function (err, page) {
@@ -80,7 +99,7 @@ router.post('/page', auth, function (req, res, next) {
     });
 });
 
-router.post('/page/changepos', auth, function (req, res, next) {
+router.post('/page/changepos', auth.auth, auth.authAdmin, function (req, res, next) {
     let pageQuery = Page.updateOne({_id: req.body.page1._id}, {'$set': {position: req.body.page1.position}});
     pageQuery.exec(function (err, result) {
         if (err) {
@@ -97,7 +116,7 @@ router.post('/page/changepos', auth, function (req, res, next) {
     });
 });
 
-router.put('/page/:page', auth, function (req, res, next) {
+router.put('/page/:page', auth.auth, auth.authAdmin, function (req, res, next) {
 
     req.page.title = req.body.title;
     req.page.path_audio = req.body.path_audio;
@@ -116,7 +135,11 @@ router.put('/page/:page', auth, function (req, res, next) {
     })
 });
 
-router.put('/pagefile/:page_with_audio', auth, upload.single("page_file"), function (req, res, next) {
+router.put('/pagefile/:page_with_audio', auth.auth, auth.authAdmin, upload.single("page_file"), function (req, res, next) {
+
+    if (!req.file) {
+        return next(new Error("Wrong file type!"));
+    }
 
     let pageQuery = Page.findOneAndUpdate(
         {_id: req.params.page_with_audio},
@@ -133,7 +156,11 @@ router.put('/pagefile/:page_with_audio', auth, upload.single("page_file"), funct
     });
 });
 
-router.put('/pagefileparagraph/:page_with_paragraph', auth, uploadParagraph.single("page_file"), function (req, res, next) {
+router.put('/pagefileparagraph/:page_with_paragraph', auth.auth, auth.authAdmin, uploadParagraph.single("page_file"), function (req, res, next) {
+
+    if (!req.file) {
+        return next(new Error("Wrong file type!"));
+    }
 
     let pageQuery = Page.findOneAndUpdate(
         {_id: req.params.page_with_paragraph, "paragraphs.position": req.body.par_pos},
@@ -151,7 +178,7 @@ router.put('/pagefileparagraph/:page_with_paragraph', auth, uploadParagraph.sing
     });
 });
 
-router.delete('/page/:page', auth, function (req, res, next) {
+router.delete('/page/:page', auth.auth, auth.authAdmin, function (req, res, next) {
     req.page.remove(function (err) {
         if (err) return next(err);
 
