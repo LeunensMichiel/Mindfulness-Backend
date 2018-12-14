@@ -195,6 +195,7 @@ router.post('/user', auth.auth, function (req, res, next) {
         }
 
         user.unlocked_sessions.push(req.body.session_id);
+        user.current_session_id = req.body.session_id;
         user.save(function (err) {
             if (err) {
                 return res.send(err);
