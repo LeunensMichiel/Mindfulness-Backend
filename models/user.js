@@ -8,6 +8,7 @@ let UserSchema = new mongoose.Schema({
     email: {type: String, lowercase: true, unique: true},
     hash: String,
     salt: String,
+    validation_code: String,
     roles: {
         admin: Boolean,
         super_admin: Boolean,
