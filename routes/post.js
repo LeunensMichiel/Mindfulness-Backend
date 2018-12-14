@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/post_image');
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         cb(null, new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname);
     }
 });
@@ -126,18 +126,23 @@ router.post('/post/image', auth.auth, upload.single("file"), function (req, res,
     });
 });
 
-router.put('/post/image/:post_image_id', auth.auth, upload.single("file") ,function(req, res, next) {
+router.put('/post/image/:post_image_id', auth.auth, upload.single("file"), function (req, res, next) {
     console.log(req.file.filename);
-    User.findByIdAndUpdate(req.body._id,  { image_file_name :req.file.filename }, function (err, post) {
-        if (err) { return next(err); }
+    console.log(req.params.post_image_id);
+    User.findByIdAndUpdate(req.params.post_image_id, { $set: {image_file_name: req.file.filename}}, {new: true}, function (err, post) {
+        if (err) {
+            return next(err);
+        }
         console.log(post);
         res.json({"message": "WUK"});
     })
 });
 
-router.put('/post', auth.auth, function(req,res,next){
-    Post.findByIdAndUpdate(req.body._id , req.body, function(err, post){
-        if (err) { return next(err) }
+router.put('/post', auth.auth, function (req, res, next) {
+    Post.findByIdAndUpdate(req.body._id, req.body, function (err, post) {
+        if (err) {
+            return next(err)
+        }
         res.json(post)
     })
 });
