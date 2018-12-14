@@ -128,7 +128,7 @@ router.post('/post/image', auth.auth, upload.single("file"), function (req, res,
 
 router.put('/post/image/:post_image_id', auth.auth, upload.single("file") ,function(req, res, next) {
     console.log(req.file.filename);
-    User.findByIdAndUpdate(req.body._id,  { "image_file_name":req.file.filename }, function (err, post) {
+    User.findByIdAndUpdate(req.body._id,  { image_file_name :req.file.filename }, function (err, post) {
         if (err) { return next(err); }
         console.log(post);
         res.json({"message": "WUK"});
