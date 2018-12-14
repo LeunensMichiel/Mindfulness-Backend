@@ -137,7 +137,7 @@ router.post('/post/image', auth, upload.single("file") ,function(req, res, next)
 
 router.put('/post/image/:post_image_id', auth, upload.single("file") ,function(req, res, next) {
     console.log(req.params.post_image_id)
-    res.json({"message": req.params.post_image_id})
+    User.findByIdAndUpdate
 });
 
 router.put('/post', function(req,res,next){
