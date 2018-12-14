@@ -129,7 +129,7 @@ router.post('/post/image', auth.auth, upload.single("file"), function (req, res,
 router.put('/post/image/:post_image_id', auth.auth, upload.single("file"), function (req, res, next) {
     console.log(req.file.filename);
     console.log(req.params.post_image_id);
-    User.findByIdAndUpdate(req.params.post_image_id, { '$set': {image_file_name : req.file.filename}}, {new: true}, function (err, post) {
+    User.findByIdAndUpdate(req.params.post_image_id, { '$set': {image_file_name : req.file.filename}}, function (err, post) {
         if (err) {
             return next(err);
         }
