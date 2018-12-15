@@ -235,7 +235,6 @@ router.put('/user/feedback', auth.auth, function (req, res, next) {
             res.json({result: "geslaagd"});
         });
     });
-
 });
 
 router.put('/user/:user', auth.auth, function (req, res, next) {
@@ -391,7 +390,9 @@ router.post('/forgot_password', function (req, res, next) {
                 return next(err);
             }
 
-            res.send("Mail successvol verstuurd");
+            res.json({
+                message: "Mail successvol verstuurd"
+            });
         });
     });
 

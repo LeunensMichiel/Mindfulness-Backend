@@ -25,104 +25,46 @@ const upload = multer({
     }
 });
 
-
-//versie2
-router.post('/getpost', auth.auth, function (req, res, next) {
-    let query = Post.findOne({
-        "sessionmap_id": req.body.sessionmap_id, "session_id": req.body.session_id,
-        "exercise_id": req.body.exercise_id, "page_id": req.body.page_id, "user_id": req.body.user_id
-    });
-
-    query.exec(function (err, post) {
-        if (err) {
-            return next(err);
-        }
-
-        if (!post) {
-            let post = new Post({
-                sessionmap_id: req.body.sessionmap_id,
-                session_id: req.body.session_id,
-                exercise_id: req.body.exercise_id,
-                page_id: req.body.page_id,
-                inhoud: req.body.inhoud,
-                afbeelding: req.body.afbeelding,
-                user_id: req.body.user_id
-            });
-
-            post.save(function (err, post) {
-                if (err) {
-                    return next(err);
-                }
-
-                let postQuery = User.findById(post.user_id);
-                postQuery.exec(function (err, user) {
-                    if (err) {
-                        return next(err);
-                    }
-                    console.log(user);
-
-                    user.posts.push(post);
-
-                    user.save(function (err, user) {
-                        if (err) {
-                            return next(err);
-                        }
-                        res.json(post);
-                    });
-                });
-            });
-        }
-        else {
-            res.json(post);
-        }
-    });
-});
-
-
-// werkt en wordt gebruikt
 router.post('/post', auth.auth, function (req, res, next) {
     let post = new Post(req.body);
     post.save(function (err, post) {
         if (err) {
             return next(err);
         }
-        User.findById(req.body.user_id, function (err, user) {
+
+        let updateUserQuery = User.updateOne({_id: req.body.user_id}, {"$push": {posts: post}});
+
+        updateUserQuery.exec(function (err, user) {
             if (err) {
                 post.remove();
                 return next(err);
             }
-            user.posts.push(post)
-            user.save(function (err, user) {
-                if (err) {
-                    return next(err);
-                }
-                res.json(post);
-            })
-        })
+
+            res.json(post);
+        });
     });
 });
 
 router.post('/post/image', auth.auth, upload.single("file"), function (req, res, next) {
-    var tempPost = JSON.parse(req.body.post)
+    let tempPost = JSON.parse(req.body.post);
     let post = new Post(tempPost);
-    post.image_file_name = req.file.filename
+    post.image_file_name = req.file.filename;
     post.save(function (err, post) {
         if (err) {
             return next(err);
         }
-        User.findById(post.user_id, function (err, user) {
+
+        let updateUserQuery = User.updateOne({_id: post.user_id}, {"$push": {posts: post}});
+
+        updateUserQuery.exec(function (err, user) {
             if (err) {
                 post.remove();
                 return next(err);
             }
-            user.posts.push(post)
-            user.save(function (err, user) {
-                if (err) {
-                    return next(err);
-                }
-                res.json(post);
-            })
-        })
+
+            res.json(post);
+        });
+
     });
 });
 

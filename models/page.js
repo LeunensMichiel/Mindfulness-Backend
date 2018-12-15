@@ -19,6 +19,18 @@ let PageSchema = new mongoose.Schema({
     }]
 });
 
+/**
+ * create Index'en
+ */
+
+PageSchema.index({_id: 1, "paragraphs.position": 1});
+
+// PageSchema.set('autoIndex', false);
+
+/**
+ * Cascade remove
+ */
+
 PageSchema.pre('remove', function (next) {
     this.model('exercise').updateOne({},
         { $pull: { pages: this._id } },

@@ -25,4 +25,3 @@ module.exports = {
         _userProperty: 'payload'
     })
 };
-

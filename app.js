@@ -1,14 +1,14 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
+let bodyParser = require('body-parser');
 
-var mongoose = require('mongoose');
+let mongoose = require('mongoose');
 let passport = require('passport');
 
-var fs = require('fs');
+let fs = require('fs');
 
 mongoose.connect('mongodb://projecten3studserver03.westeurope.cloudapp.azure.com/mindfulnessdb', { useNewUrlParser: true });
 
@@ -26,7 +26,7 @@ require('./models/post');
 
 require('./config/passport');
 
-// var indexRouter = require('./routes/index');
+// let indexRouter = require('./routes/index');
 let userRouter = require('./routes/user');
 let fileRouter = require('./routes/files');
 let exerciseRouter = require('./routes/exercise');
@@ -38,7 +38,7 @@ let groupRouter = require('./routes/group');
 let feedbackRouter = require('./routes/feedback');
 let adminRouter = require('./routes/admin');
 
-var app = express();
+let app = express();
 
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -75,45 +75,5 @@ app.use((error, req, res, next) => {
     });
 });
 
-/*
- * For production we should use https instead of http
- */
-
-// error handler
-// app.use(function(err, req, res, next) {
-//     // set locals, only providing error in development
-//     res.locals.message = err.message;
-//     res.locals.error = req.app.get('env') === 'development' ? err : {};
-//
-//     // render the error page
-//     res.status(err.status || 500);
-//     res.json(err.message);
-// });
-
-// app.post('/uploadAudio',function(req,res){
-//     console.log(req.files.image.__dirname);
-//     console.log(req.files.image.dirname);
-//     console.log(req.files.image.path);
-//     fs.readFile(req.files.image.path, function(err,data){
-//         var dirname = "../../file-uploadAudio";
-//         var newPath = dirname + "/uploads/" + req.files.image.dirname;
-//         fs.writeFile(newPath,data,function(err){
-//             if(err){
-//                 res.json({'response':"Error"});
-//             }
-//             else{
-//                 res.json({'response':"Saved"});
-//             }
-//         });
-//     });
-// });
-
-app.get('/uploads/:file',function(req,res){
-    file = req.params.file;
-    var dirname = "../../file-uploadAudio";
-    var img = fs.readFileSync(dirname + "/uploads/" + file);
-    res.writeHead(200,{'Content-Type':'image/jpg'});
-    res.end(img,'binary');
-});
 
 module.exports = app;
