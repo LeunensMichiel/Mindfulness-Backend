@@ -107,13 +107,16 @@ router.get('/session/:session', auth.auth, function (req, res, next) {
     res.json(req.session);
 });
 
-router.delete('/session/:session', auth.auth, auth.authAdmin, function (req, res) {
+router.delete('/session/:session', auth.auth, auth.authAdmin, function (req, res, next) {
     req.session.remove(function (err, session) {
         if (err) {
             return next(err)
         }
 
-        fileManager.removeFile(session.image_filename, "session_image");
+        if (session.image_filename) {
+            fileManager.removeFile(session.image_filename, "session_image");
+        }
+
 
         res.json(session);
 

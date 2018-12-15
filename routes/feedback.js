@@ -17,9 +17,11 @@ router.post('/feedback', auth.auth, function (req, res, next) {
     });
 });
 
+/**
+ * This API call sends all feedback documents back
+ * Can only be accessed as admin and super_admin
+ */
 router.get('/feedback', auth.auth, auth.authAdmin, function(req, res, next) {
-
-
     let feedbackQuery = Feedback.find({},{},{sort: {date: -1}}).populate("session");
 
     feedbackQuery.exec(function(err, listFeedback) {

@@ -32,12 +32,12 @@ PageSchema.index({_id: 1, "paragraphs.position": 1});
  */
 
 PageSchema.pre('remove', function (next) {
-    this.model('exercise').updateOne({},
+    this.model('exercise').updateMany({},
         { $pull: { pages: this._id } },
-        { safe: true, multi: true },
         next
     );
     return next();
 });
+
 
 mongoose.model('page', PageSchema);

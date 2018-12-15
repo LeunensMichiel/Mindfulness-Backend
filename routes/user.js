@@ -64,24 +64,20 @@ router.post('/login', function (req, res, next) {
         return res.status(400).json({message: 'email of wachtwoord was niet ingevuld'});
     }
 
-    console.log("1")
     passport.authenticate('local', function (err, user, info) {
-        console.log("2")
         if (err) {
             return next(err);
         }
-        console.log("3")
+
         if (!user) {
             return res.status(401).json(info);
         }
-        console.log("4")
+
         if (!user.roles.client) {
             return res.status(401).json(info);
         }
-        console.log("5")
         if (user) {
 
-            console.log("6")
             return res.json({
                 //Aangepast door Michiel op 30/11 om bugs proberen op te lossen van userInfo
                 token: user.generateJWT(),
@@ -99,7 +95,6 @@ router.post('/login', function (req, res, next) {
         } else {
             return res.status(401).json(info);
         }
-        console.log("7")
     })(req, res, next);
 });
 
@@ -248,7 +243,6 @@ router.put('/user/:user', auth.auth, function (req, res, next) {
             if (err) {
                 return res.send(err);
             }
-            console.log(user.group);
             res.json(group);
         })
     });
@@ -329,7 +323,6 @@ router.put('/change_password/:user', auth.auth, function (req, res, next) {
 router.post('/change_password', function (req, res, next) {
 
     if (!req.body.new_password || !req.body.validation_code || !req.body.email) {
-        console.log("test");
         return res.status(400).json({message: 'Input invalid'});
     }
 
@@ -348,7 +341,7 @@ router.post('/change_password', function (req, res, next) {
             }
 
             return res.json({
-                message: "Password updated!"
+                result: "Password updated!"
             });
         });
     });
@@ -391,7 +384,7 @@ router.post('/forgot_password', function (req, res, next) {
             }
 
             res.json({
-                message: "Mail successvol verstuurd"
+                result: "Mail successvol verstuurd"
             });
         });
     });

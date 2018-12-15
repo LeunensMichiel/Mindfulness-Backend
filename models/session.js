@@ -12,13 +12,15 @@ let SessionSchema = new mongoose.Schema({
 });
 
 SessionSchema.pre('remove', function (next) {
-    // this.model('exercise').deleteMany(
-    //     { _id: { $in: this.execPopulate } },
-    //     next)
+    console.log(this.exercises);
 
-    this.model('sessionmap').updateOne({},
+    this.model('exercise').deleteMany(
+        {_id: { $in: this.exercises }},
+        next
+    );
+
+    this.model('sessionmap').updateMany({},
         { $pull: { sessions: this._id } },
-        { safe: true, multi: true },
         next
     );
     return next();

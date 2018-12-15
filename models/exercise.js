@@ -10,12 +10,17 @@ let ExerciseSchema = new mongoose.Schema({
 });
 
 ExerciseSchema.pre('remove' ,function(next){
-    console.log("PRE-REMOVE");
-    console.log(this.pages);
     this.model('page').deleteMany(
         {_id: { $in: this.pages }},
         next
-    ); 
+    );
+
+    this.model('session').updateMany({},
+        { $pull: { exercises: this._id } },
+        next
+    );
+    return next();
 });
+
 
 mongoose.model('exercise', ExerciseSchema);

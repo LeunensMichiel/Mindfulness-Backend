@@ -54,14 +54,12 @@ router.post('/exercise', auth.auth, auth.authAdmin, function (req, res, next) {
 });
 
 router.delete('/exercise/:exercise', auth.auth, auth.authAdmin, function (req, res) {
-    Exercise.remove({_id: {$in: req.exercise.pages}}, function (err) {
-        if (err) return next(err);
-        req.exercise.remove(function (err) {
-            if (err) {
-                return next(err)
-            }
-            res.json(req.exercise);
-        });
+
+    req.exercise.remove(function (err) {
+        if (err) {
+            return next(err)
+        }
+        res.json(req.exercise);
     });
 });
 
