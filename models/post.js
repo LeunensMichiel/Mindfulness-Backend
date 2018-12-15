@@ -19,7 +19,8 @@ let PostSchema = new mongoose.Schema({
             type:Boolean,
             default: false
         }
-    }]
+    }],
+    EEN_FUCKING_DATUM_VOOR_MICHIEL: { type: Date, default: Date.now }
 });
 
 mongoose.model('post', PostSchema);
