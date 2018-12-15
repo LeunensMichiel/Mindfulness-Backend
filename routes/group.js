@@ -36,7 +36,8 @@ router.post('/group', auth.auth, auth.authAdmin, function (req, res, next) {
     let group = new Group({
         name: req.body.name,
         sessionmap_id: req.body.sessionmap._id,
-        actief:false
+        actief:false,
+        aanmaakdatum:req.body.aanmaakdatum
     });
     group.save(function (err, group) {
         if (err) {
