@@ -20,7 +20,7 @@ let PostSchema = new mongoose.Schema({
             default: false
         }
     }],
-    EEN_FUCKING_DATUM_VOOR_MICHIEL: { type: Date, default: Date.now }
+    date: { type: Date, default: Date.now }
 });
 
 mongoose.model('post', PostSchema);
