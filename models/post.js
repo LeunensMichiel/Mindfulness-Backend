@@ -11,7 +11,11 @@ let PostSchema = new mongoose.Schema({
     image_file_name:String,
     session_name:String,
     exercise_name:String,
-    page_name:String
+    page_name:String,
+    multiple_choice_items: [{
+        position: Number,
+        message: String
+    }]
 });
 
 mongoose.model('post', PostSchema);
