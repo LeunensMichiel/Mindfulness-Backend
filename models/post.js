@@ -14,7 +14,11 @@ let PostSchema = new mongoose.Schema({
     page_name:String,
     multiple_choice_items: [{
         position: Number,
-        message: String
+        message: String,
+        checked: {
+            type:Boolean,
+            default: false
+        }
     }]
 });
 
