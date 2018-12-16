@@ -258,7 +258,7 @@ router.put('/user/:user/image', auth.auth, upload.single("file"), function (req,
         if (err) {
             return next(err);
         }
-        res.json(user)
+        res.json({'result': req.file.filename})
     });
 });
 
