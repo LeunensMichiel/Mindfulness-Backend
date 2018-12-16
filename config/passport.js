@@ -12,6 +12,12 @@ passport.use(new LocalStrategy({
         usernameField: 'email',
         passwordField: 'password'
     },
+    /**
+     * check of de inlog gegevens goed zijn
+     * @param email
+     * @param password
+     * @param done
+     */
     function (email, password, done) {
         let query = User.findOne({email: email})
             .populate('group')
