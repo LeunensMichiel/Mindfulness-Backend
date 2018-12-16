@@ -256,17 +256,10 @@ router.put('/user/:user', auth.auth, function (req, res, next) {
 
 router.put('/user/:user/image', auth.auth, upload.single("file"), function (req, res, next) {
 
-    if (req.userParam.image_file_name)
-        let oldFileName = req.userParam.image_file_name;
-    else
-        let oldFileName = undefined
-
     User.findByIdAndUpdate(req.paramUser._id, {$set: {"image_file_name": req.file.filename}}, function (err, user) {
         if (err) {
             return next(err);
         }
-        if (oldFileName)
-            fileManager.removeFile(oldFileName, "profile_image")
         res.json({'result': req.file.filename})
     });
 });
