@@ -90,7 +90,8 @@ router.post('/login', function (req, res, next) {
                 current_exercise_id: user.current_exercise_id,
                 post_ids: user.posts,
                 group: user.group,
-                feedbackSubscribed: user.feedbackSubscribed
+                feedbackSubscribed: user.feedbackSubscribed,
+                image_file_name: user.image_file_name
             });
         } else {
             return res.status(401).json(info);

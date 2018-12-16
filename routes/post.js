@@ -94,7 +94,6 @@ router.get('/checkpost/:post_page_id', auth.auth, function (req, res, next) {
 });
 
 router.get('/post/:user', auth.auth, function (req, res, next) {
-    console.log(req.userParam.posts);
     res.json(req.userParam.posts);
 });
 
