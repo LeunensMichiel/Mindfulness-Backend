@@ -54,7 +54,11 @@ router.post('/register', function (req, res, next) {
         }
         return res.json({
             token: user.generateJWT(),
-            _id: user._id
+            _id: user._id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+            feedbackSubscribed: user.feedbackSubscribed
         })
     });
 });
@@ -90,7 +94,8 @@ router.post('/login', function (req, res, next) {
                 current_exercise_id: user.current_exercise_id,
                 post_ids: user.posts,
                 group: user.group,
-                feedbackSubscribed: user.feedbackSubscribed
+                feedbackSubscribed: user.feedbackSubscribed,
+                image_file_name: user.image_file_name
             });
         } else {
             return res.status(401).json(info);
@@ -253,7 +258,7 @@ router.put('/user/:user/image', auth.auth, upload.single("file"), function (req,
         if (err) {
             return next(err);
         }
-        res.json(user)
+        res.json({'result': req.file.filename})
     });
 });
 
