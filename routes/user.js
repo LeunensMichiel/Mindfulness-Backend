@@ -54,7 +54,11 @@ router.post('/register', function (req, res, next) {
         }
         return res.json({
             token: user.generateJWT(),
-            _id: user._id
+            _id: user._id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+            feedbackSubscribed: user.feedbackSubscribed
         })
     });
 });
