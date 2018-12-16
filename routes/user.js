@@ -299,7 +299,7 @@ router.put('/change_password/:user', auth.auth, function (req, res, next) {
     let user = req.paramUser;
 
     if (!req.body.new_password || !req.body.old_password) {
-        return res.status(400).json({message: 'Input invalid'});
+        return next(new Error('Input invalid!'));
     }
 
     if (!user.validPassword(req.body.old_password)) {
