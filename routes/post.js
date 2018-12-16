@@ -94,6 +94,7 @@ router.get('/checkpost/:post_page_id', auth.auth, function (req, res, next) {
 });
 
 router.get('/post/:user', auth.auth, function (req, res, next) {
+    console.log(req.user.posts);
     res.json(req.user.posts)
 });
 
@@ -150,7 +151,7 @@ router.param('post_page_id', function (req, res, next, id) {
 
 router.param('user', function (req, res, next, id) {
     let query = User.findById(id)
-        .populate('posts')
+        .populate('posts');
     query.exec(function (err, user) {
         if (err) {
             return next(err)
