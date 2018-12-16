@@ -303,7 +303,7 @@ router.put('/change_password/:user', auth.auth, function (req, res, next) {
     }
 
     if (!user.validPassword(req.body.old_password)) {
-        return res.status(401).json({message: 'Unauthorized!'});
+        return next(new Error('Unauthorized!'));
     }
 
     user.setPassword(req.body.new_password);
@@ -317,7 +317,6 @@ router.put('/change_password/:user', auth.auth, function (req, res, next) {
             token: updatedUser.generateJWT()
         });
     });
-
 });
 
 router.post('/change_password', function (req, res, next) {
