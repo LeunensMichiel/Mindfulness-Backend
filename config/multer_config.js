@@ -1,9 +1,19 @@
 const multer = require('multer');
 
+/**
+ * Functie voor naam in te stellen van een file
+ * @param req
+ * @param file
+ * @param cb
+ */
 const filename = function (req, file, cb) {
     cb(null, (new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "") + file.originalname).replace(" ", ""));
 };
 
+/**
+ * Config van page_audio
+ * @type {DiskStorage}
+ */
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/page_audio');
@@ -11,6 +21,10 @@ const storage = multer.diskStorage({
     filename: filename
 });
 
+/**
+ * storage config van paragraph image
+ * @type {DiskStorage}
+ */
 const storageParagraph = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/paragraphs_image');
@@ -18,6 +32,10 @@ const storageParagraph = multer.diskStorage({
     filename: filename
 });
 
+/**
+ * Storage config van session_image
+ * @type {DiskStorage}
+ */
 const storageSession = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/session_image');
@@ -25,6 +43,10 @@ const storageSession = multer.diskStorage({
     filename: filename
 });
 
+/**
+ * storage config van post image
+ * @type {DiskStorage}
+ */
 const storagePost = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/post_image');
@@ -32,6 +54,10 @@ const storagePost = multer.diskStorage({
     filename: filename
 });
 
+/**
+ * storage config van profile pic
+ * @type {DiskStorage}
+ */
 const storageUser = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/profile_image');
@@ -39,7 +65,13 @@ const storageUser = multer.diskStorage({
     filename: filename
 });
 
-
+/**
+ * File filter voor audio
+ * Dit laat enkel audio bestanden door die support worden door android mediaplayer
+ * @param req
+ * @param file
+ * @param cb
+ */
 const audioFileFilter = (req, file, cb) => {
     if (
         file.mimetype == 'audio/mpeg' ||
@@ -56,6 +88,12 @@ const audioFileFilter = (req, file, cb) => {
     }
 };
 
+/**
+ * File filter voor images
+ * @param req
+ * @param file
+ * @param cb
+ */
 const imagefileFilter = (req, file, cb) => {
     if (
         file.mimetype == 'image/jpg' ||
@@ -75,7 +113,7 @@ module.exports = {
         storage: storage,
         limits: {
             files: 1,
-            fileSize: 1024 * 1024 * 10
+            fileSize: 1024 * 1024 * 10 // max 10mb
         },
         fileFilter: audioFileFilter
     }),
@@ -84,7 +122,7 @@ module.exports = {
         storage: storageParagraph,
         limits: {
             files: 1,
-            fileSize: 1024 * 1024 * 5
+            fileSize: 1024 * 1024 * 5 // max 5mb
         },
         fileFilter: imagefileFilter
     }),
@@ -93,7 +131,7 @@ module.exports = {
         storage: storageSession,
         limits: {
             files: 1,
-            fileSize: 1024 * 1024 * 5
+            fileSize: 1024 * 1024 * 5 // max 5mb
         },
         fileFilter: imagefileFilter
     }),
@@ -102,7 +140,7 @@ module.exports = {
         storage: storagePost,
         limits: {
             files: 1,
-            fileSize: 1024 * 1024 * 5
+            fileSize: 1024 * 1024 * 5 // max 5mb
         },
         fileFilter: imagefileFilter
     }),
@@ -111,7 +149,7 @@ module.exports = {
         storage: storageUser,
         limits: {
             files: 1,
-            fileSize: 1024 * 1024 * 5
+            fileSize: 1024 * 1024 * 5 // max 5mb
         },
         fileFilter: imagefileFilter
     })

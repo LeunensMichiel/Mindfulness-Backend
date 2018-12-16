@@ -6,7 +6,7 @@
 
 const email     = require("emailjs");
 
-// Server config
+// Server connection config
 const server    = email.server.connect({
     user:       "mindfulness.beheerder@gmail.com",
     password:   process.env.EMAIL_PASSWORD,

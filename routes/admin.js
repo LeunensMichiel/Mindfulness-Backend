@@ -7,6 +7,9 @@ let User = mongoose.model('user');
 
 let auth = require('../config/auth_config');
 
+/**
+ * Deze api call geeft alle actieve beheerders terug
+ */
 router.get("/activeadmin", auth.auth, auth.authSuperAdmin, function (req, res, next) {
     let adminQuery = User.find(
         {
@@ -45,6 +48,9 @@ router.get("/activeadmin", auth.auth, auth.authSuperAdmin, function (req, res, n
     });
 });
 
+/**
+ * Deze api call geeft alle niet actieve beheerders terug
+ */
 router.get("/nonactiveadmin", auth.auth, auth.authSuperAdmin, function (req, res, next) {
     let adminQuery = User.find(
         {
@@ -78,6 +84,9 @@ router.get("/nonactiveadmin", auth.auth, auth.authSuperAdmin, function (req, res
     });
 });
 
+/**
+ * Deze api call (de)activeerd een beheerder
+ */
 router.put("/admin/:admin", auth.auth, auth.authSuperAdmin, function (req, res, next) {
 
     req.admin.admin_active = !req.admin.admin_active;
@@ -90,6 +99,9 @@ router.put("/admin/:admin", auth.auth, auth.authSuperAdmin, function (req, res, 
     });
 });
 
+/**
+ * Deze api call verwijderd een beheerder
+ */
 router.delete('/admin/:admin', auth.auth, auth.authSuperAdmin, function (req, res, next) {
     req.admin.remove(function (err) {
         if (err) return next(err);
