@@ -90,8 +90,8 @@ router.put('/post', auth.auth, function (req, res, next) {
 });
 
 router.get('/checkpost/:post_page_id', auth.auth, function (req, res, next) {
-    //res.json(req.post)
-    post.find({'user_id': req.user._id, 'page_id':req.params.post_page_id  }, function (err, post) {
+    res.json(req.post)
+    /*post.find({'user_id': req.user._id, 'page_id':req.params.post_page_id  }, function (err, post) {
         if (err) {
             return next(err);
         }
@@ -99,7 +99,7 @@ router.get('/checkpost/:post_page_id', auth.auth, function (req, res, next) {
             res.json({'_id': 'none'})
         }
         res.json(post)
-    });
+    });*/
 });
 
 router.get('/post/:user', auth.auth, function (req, res, next) {
